@@ -51,3 +51,23 @@ library(ggplot2)  #usefull to check the if the packages have been installed
 q() #that is the command to save a file
 
 
+setwd("C:/lab/")
+
+load("R_code_spatial.RData")
+
+ls()
+
+library(ggplot2)  #checking if ggplot have already been installed
+
+data(mpg)
+head(mpg)
+
+#remember the key components: data,aes, geom
+
+ggplot(mpg,aes(x=displ, y=hwy))+geom_point()
+ggplot(mpg,aes(x=displ, y=hwy))+geom_line()
+ggplot(mpg,aes(x=displ, y=hwy))+geom_polygon()
+
+head(covid)
+
+ggplot(covid,aes(x=lon, y=lat, size=cases))+geom_point()
