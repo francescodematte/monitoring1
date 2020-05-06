@@ -52,14 +52,6 @@ plot(difdvi, col=cld)
 
 hist(difdvi)
  
-
-
- 
- 
- 
-
-
-
 copNDVI100 <- aggregate(copNDVI, fact=100)
 levelplot(copNDVI100)
 
