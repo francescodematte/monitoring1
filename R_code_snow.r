@@ -46,6 +46,73 @@ plot(snow.multitemp,col=cl)
 
 source("prediction.r")
 
+#missing
+
+#second lesson
+
+#ex: import the snow cover images all together
+
+rlist <- list.files(pattern="snow")
+
+rlist
+
+import <- lapply(rlist, raster)
+
+snow.multitemp <-stack(import)
+
+plot(snow.multitemp,col=cl)
+
+[16:52] Duccio Rocchini
+    
+rlist <- list.files(pattern="snow")
+rlist
+
+
+import <- lapply(rlist, raster)
+
+snow.multitemp <- stack(import)
+
+plot(snow.multitemp, col=cl)
+ 
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100) 
+
+plot(snow.multitemp, col=cl)
+
+prediction <- raster("predictedsnow.2025.norm.tif")
+ 
+plot(prediction, col=cl)
+
+#export the output and imagine you want to send the results to a collegue
+
+writeRaster(prediction, "final.tif")
+
+#final stack
+
+final.stack <- stack(snow.multitemp, prediction)
+
+plot(final.stack, col=cl)
+
+#export the R graph
+
+pdf("my_final_exciting_graph.pdf")
+
+plot(final.stack, col=cl)
+
+dev.off()
+
+png("my_final_exciting_graph.png")
+
+plot(final.stack, col=cl)
+
+dev.off()
+
+
+ 
+
+
+
+
+
 
 
 
