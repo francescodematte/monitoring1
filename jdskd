@@ -1,0 +1,22 @@
+ setwd("C:/snow/")
+ 
+ library(raster)
+
+ library(ncdf4)
+ 
+ snow <- raster("c_gls_SCE500_202005180000_CEURO_MODIS_V1.0.1.nc")
+ 
+ cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+ 
+ ext <- c(0, 20, 35, 50)
+ 
+ zoom(snow, ext=ext)
+ 
+ snowitaly <- crop(snow, ext, col=cl)
+ 
+ zoom(snow, ext=drawExtent())
+ 
+ 
+ 
+ 
+ 
