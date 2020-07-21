@@ -176,3 +176,45 @@ head(covid)
 #we will exagerate the size as a function of the number of cases
 ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point()
 
+#4_R_code_multivariate##################################################################################
+####################################################################################
+###R code for multivariate analysis###
+
+#Open R#
+#set the working directory
+setwd("C:/lab/")  
+#The vegan package contains all common ordination methods, such as principal component analysis, correspondence analysis or detrended correspondence analysis 
+
+install.packages("vegan")
+library(vegan)
+
+#"biomes" is the name that we assign to the data by the vector, read.table is to open and analyze the data, "biomes.csv" is the name of the file, head=T because the first row is words only, sep="," is the separator between the names of the words in the row
+biomes<-read.table("biomes.csv",head=T,sep=",")
+
+#to have a look at the dataset: head(biomes)or view(biomes)
+head(biomes)
+
+#multivariate analysis: decorana= detrended correspondence analysis
+multivar<- decorana(biomes)
+
+#we can then realise the plot of the multivariate analysis
+plot(multivar)
+
+#we are now seeing the graph from 1 point of view, but we can see it from others (thinks to the paintings of Dalì)
+#if we just put multivar, we can see the results of the analysis
+multivar
+#eigenvalues= the percentage of data that we are able to see from a specific perspective
+#we got DCA1=0.5117 DCA2=0.3036,  51%+30%=81%  (the total amount of variation we can perceive from this perspective)
+
+#let's use other data to then sum up the same biomes
+biomes_types <- read.table("biomes_types.csv", header=T, sep=",")
+head(biomes_types)
+attach(biomes_types)
+
+#we make an ordiellipse that connects all the data. Multivar is the first name we gave.
+ordiellipse(multivar,type, col=1:4, kind="ehull", lwd=3)
+#we can put the color like this or col=c("green","orange","red","blue")
+
+#to see the 'disk' of the biomes
+ordispider(multivar, type, col=1:4, label = T)
+
