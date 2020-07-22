@@ -388,3 +388,164 @@ par(mfrow=c(3,1))
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011res10, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011res100, r=4, g=3, b=2, stretch="Lin")
+
+#6_densitymap_point_pattern_analysis.r##################################################################################
+####################################################################################
+#Point Pattern Analysis: density map
+
+#install the package to analyse the spatial point patterns that we need to develop our study
+install.packages("spatstat")
+library(spatstat)
+
+attach(covid)
+head(covid)
+
+# ppp=power point pattern, x=long, y=lat
+covids<- ppp(lon, lat, c(-180,180), c(-90,90))   #c(..) is needed to take all this values together
+#let's associate to the vector d the density of the covids data we' ve just created
+
+d<- density(covids)
+
+#then  we create a density plot...
+
+plot(d)
+
+#and we add the density to the plot, adding details  to this function. Do not close the plot window or the remaining will be deleted
+
+points(covids)
+
+
+setwd("C:/lab/") 
+load("point_pattern.RData")
+ls("point_pattern.RData")  
+#covids:point pattern
+#d: density map
+
+library(spatstat)
+
+plot(d)
+
+#we can put on this map the points of the covid
+points(covids)
+
+#download coastlines.zip file from IOL and copy all the files into the lab folder
+#rgdal package provides bindings to the 'Geospatial' Data Abstraction Library 
+install.packages("rgdal")
+library(rgdal)
+
+
+#read0GR within rgdal is a function that reads an OGR data source and layer into a suitable Spatial vector object
+coastlines<-readOGR("ne_10m_coastline.shp")
+
+plot(d)
+points(covids)
+plot(coastlines, add=T)  #we put add, thereby preventing the precedent results from being erased 
+
+#change the colours and prettify the graph#
+#100 means that there are 100 colours from yellow spectrum to red one
+cl<-colorRampPalette(c("yellow","orange","red"))(100)  
+plot(d,col=cl)
+points(covids)
+plot(coastlines, add=T)
+
+#another try
+clr<-colorRampPalette(c("light blue","yellow", "orange"," light pink"))(100)  
+plot(d,col=clr, main="Covid19 distribution")    #main= it adds the text for the main title
+points(covids)
+plot(coastlines, add=T)
+
+#to export it as a pdf file
+pdf("covid_density.pdf")
+clr<-colorRampPalette(c("light blue","yellow", "orange","light pink"))(100)  
+plot(d,col=clr, main="Covid19 density")
+points(covids)
+plot(coastlines, add=T)
+dev.off()
+
+#7_R_code_ecosystem_functioning##################################################################################
+####################################################################################
+#R code to view biomass over the world and calculate changes in ecosystem functioning
+
+#energy
+#nutrient cycle
+#proxies
+
+#rasterdiv() function is very useful to calculate indices of diversity on numerical matrices based on information theory.
+install.packages("rasterdiv")
+#rasterVis() function comprehend methods for enhanced visualization and interaction with raster data
+install.packages("rasterVis")
+
+library(rasterVis)
+library(rasterdiv)
+#the input dataset is the Copernicus Long-term (1999-2017) average Normalise Difference Vegetation Index (copNDVI)
+data(copNDVI)
+plot(copNDVI)
+
+#reclassify is a function that (re)classifies groups of values to other values
+#cbind is in this case used to remove some data from the library that is not useful for us (and they are classified as NA)
+
+copNDVI<- reclassify(copNDVI, cbind(253:255,NA), right=TRUE)
+
+#that could be an impressive function to flabbergast your supervisor!
+levelplot(copNDVI)
+#highlights the mean biomass over the last 20 years
+
+#fact=10 (factor of 10) means, again, aggregating 10 pixels in 1, so the new image has much visible boundaries beetween colours
+#the number of pixel has to be selected with regard to the object of our investigation, if it is possible to have less pixels with the same analytical power it's of course better (the file will be smaller in size)
+copNDVI10<- aggregate (copNDVI,fact=10)
+levelplot(copNDVI10)
+
+#let's try 100x100 pixels in one
+copNDVI100<- aggregate (copNDVI,fact=100)
+levelplot(copNDVI100)
+
+#working on images dealing with the deforestation which is since decades occurring in the Amazon forest
+setwd("C:/lab/")  
+library(raster)
+#uploading the two different images, brick() function to create a RasterBrick (multi_layered image)
+defor1 <- brick("defor1_.jpg")
+defor2 <- brick("defor2_.jpg")
+
+#band1: NIR
+#band2: red
+#band3: green
+#making the plot of the two images separately, selecting the bands, stretch to make a better shading effect
+plotRGB(defor1, r=1, g=2,b=3, stretch="Lin")
+plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
+
+#to see the two images one next to the other we use the par() function with multiframe by rows 
+par(mfrow=c(1,2))  #here we needed 1 line and 2 columns
+plotRGB(defor1, r=1, g=2, b=3, stretch="Lin")
+plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
+
+#if you write defor1 on R you look at the names that correspond to the 3 bands
+#names: defor1_.1,  defor1_.2,  defor1_.3
+
+#band1: NIR    defor1_.1
+#band2: red    defor1_.2
+#dvi=difference vegetation index. 
+dvi1 <- defor1$defor1_.1 - defor1$defor1_.2  #the simbol $ allows us to select a band only from our multilayered image 
+ 
+ 
+ #same for defor2
+ #names      : defor2_.1, defor2_.2, defor2_.3 
+ #band1: NIR    defor2_.1
+ #band2: red     defor2_.2
+ 
+ dvi2 <- defor2$defor2_.1 - defor2$defor2_.2
+
+#we then create the palette with the colours we want to highlight the data with
+cl <- colorRampPalette(c('darkpurple','yellow','red','black'))(100)
+
+#to see the two images one next to the other we use the again par() function 
+par(mfrow=c(1,2))
+plot(dvi1, col=cl)
+plot(dvi2, col=cl)
+
+difdvi<- dvi1 - dvi2
+
+dev.off() #to close what we opened before
+cld <- colorRampPalette(c('darkblue','white','red'))(100) 
+plot(difdvi, col=cld)
+#hist() function computes a histogram of the given data values
+hist(difdvi)
