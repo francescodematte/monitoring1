@@ -218,3 +218,173 @@ ordiellipse(multivar,type, col=1:4, kind="ehull", lwd=3)
 #to see the 'disk' of the biomes
 ordispider(multivar, type, col=1:4, label = T)
 
+
+#5_r_code_remote_sensing.r##################################################################################
+####################################################################################
+###R code for remote sensing analysis##
+#set the working directory
+setwd("C:/lab")
+
+#raster is designed for reading, writing, manipulating, analyzing and modelling of spatial data (the format with pixels), (remeber the name, deriving from rastrum)
+install.packages("raster")
+#RStoolbox is a package for remote sensing image processing and analysis, such as calculating spectral indices, principal component transformation
+install.packages("RStoolbox")
+
+library(raster)
+#the satelite runs through orbits called "paths" and covers the whole earth in 14-17 days.
+
+#to import images, the function is brick (to import a package of bands with different reflectance of pixels)
+# the file.grd = grid, network of images
+p224r63_2011 <- brick("p224r63_2011_masked.grd")
+
+#we use the function plot to make the plot of the uploaded image, we set the colours with the vector cl and realise the final plot with those colors, by using the raster function colorRampPalette
+plot(p224r63_2011)
+cl <- colorRampPalette(c('black','grey','light grey'))(100) 
+plot(p224r63_2011, col=cl)
+ 
+#Bands of landsat
+#B1: blue
+#B2:green
+#B3:red
+#B4:NIR  #infrared  #it's the band where most of plants' reflectance is captured (also the percentage in green is quite high)
+
+#multiframe of different plots
+#par function is used to incorporate multiple graphs in a single plot
+#mfrow stays for multiframe rows
+par(mfrow=c(2,2))
+#2,2 means that we will have 4 plots in total divided in 2 rows and 2 columns.
+#we do this because we will make a graph with the 4 colour bands
+
+##for each colour band we set the colour palette with different nuances and we plot the band (B1,B2,B3,B4) with those colours
+#to do that and select the right band within the picture we use ‘$’.This simbol is used in this case to link a specific column to a specific data frame.
+#B1:blue
+clb <- colorRampPalette(c('dark blue','blue','light blue'))(100) 
+plot(p224r63_2011$B1_sre, col=clb)                       
+
+#B2
+clg <- colorRampPalette(c('dark green','green','light green'))(100) 
+plot(p224r63_2011$B2_sre, col=clg)
+
+#B3
+clr <- colorRampPalette(c('dark red','red','salmon'))(100) 
+plot(p224r63_2011$B3_sre, col=clr)
+
+#B4
+cln <- colorRampPalette(c('red','orange','yellow'))(100) 
+plot(p224r63_2011$B4_sre, col=cln)
+
+#exercise: make a graph with 4 plots on one column
+#4,1 means that there will be 4 lines and 1 column
+
+par(mfrow=c(4,1))
+
+#B1:blue
+clb <- colorRampPalette(c('dark blue','blue','light blue'))(100) 
+plot(p224r63_2011$B1_sre, col=clb)                        
+
+#B2: with but with green (B2) 
+clg <- colorRampPalette(c('dark green','green','light green'))(100) 
+plot(p224r63_2011$B2_sre, col=clg)
+
+#B3: with but with red (B3) 
+clr <- colorRampPalette(c('dark red','red','salmon'))(100) 
+plot(p224r63_2011$B3_sre, col=clr)
+
+#B4: with but with NIR (B4) 
+cln <- colorRampPalette(c('red','orange','yellow'))(100) 
+plot(p224r63_2011$B4_sre, col=cln)
+
+
+
+#plotting the 3 bands together and see the image the way human eye would see it...
+#RGB (red green blue): B1: blue; B2:green; B3:red.
+#stretch="Lin" stretch linear= to make the differetn colours gradually blur into each other
+#every pixel is 30 km wide
+#Bands of landsat
+#B1: blue
+#B2:green
+#B3:red
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+
+# we always have to refer to three bands only. If we want to add the NIR band if we want to use the NIR we need to shift the components
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+#vegetation is becoming red, the pink part is mainly agricultural fields, white parts are open areas (deforestation, huge land changes)
+
+#exercise: put NIR on top of g component of the RGB
+plotRGB(p224r63_2011, r=3, g=4, b=2, stretch="Lin")
+#now the vegetation is in green, dark green is mainly given by the water in the forest (or high humidity) while pink is the bear soil (agriculture)
+
+#exercise: put NIR on top on b component of the RGB
+plotRGB(p224r63_2011, r=3, g=2, b=4, stretch="Lin")
+#this time the agricultural area is in yellow (extremely evident in this case)
+
+###save workspace
+
+###following lesson...
+
+setwd("C:/lab/") 
+#ls() is the list function to see which packages we have already installed in the server
+ls()
+
+library(raster)
+#brick () function to create a multi-layered raster object. Image within brackets because importing it from the outside!  We assigned it a name that r will later recognise
+p224r63_1988 <- brick("p224r63_1988_masked.grd")
+plot(p224r63_1988)
+
+#Exercise: plot in visible RGB  both images
+#PlotRGB
+#Bands of landsat
+#B1: blue
+#B2:green
+#B3:red
+#B4:NIR  #near infrared (wave lenght is longer than red but still shorter than infrared)
+
+par(mfrow=c(2,1))
+plotRGB(p224r63_1988, r=3, g=2, b=1, stretch="Lin")
+plotRGB(p224r63_2011, r=3, g=2, b=1, stretch="Lin")
+
+#Exercise: RGB 432
+par(mfrow=c(2,1))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+
+#How to better visualize the noise(due to evapotraspiration, humidity and clouds)present in the image?
+#Stretching more the colours and means enhancing the noise...
+par(mfrow=c(2,1))
+plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")   #histogram stretching, a mathematical tool to enhance contrast from different pixels
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
+
+#PlotRGB
+#Bands of landsat
+#B1: blue
+#B2:green
+#B3:red:B3_sre
+#B4:NIR  #infrared:B4_sre
+
+#dvi=difference vegetation index  
+dvi2011<- p224r63_2011$B4_sre - p224r63_2011$B3_sre
+#colors() to see the colours
+cl <- colorRampPalette(c('firebrick4','tomato2','olivedrab4'))(100) 
+plot(dvi2011, col=cl)
+
+#Exercise with dvi 1988
+dvi1988<- p224r63_1988$B4_sre - p224r63_1988$B3_sre
+#colors() to see the colours
+cl <- colorRampPalette(c('firebrick4','lightsalmon1','darkolivegreen'))(100) 
+plot(dvi1988, col=cl)
+
+#Differences in time
+diff <- dvi2011 - dvi1988
+plot(diff)
+
+#changing the grain(pixels)
+#when you change the dimension of the pixels you talk about resampling (res)  #different grain size means different spatial resolution. At different spatial resolution the structure and properties of ecosystems can be seen differently, thus different info are provided 
+#fact=10 means that we are increasing 10 times the size of each pixels. We want to decrease the resolution because there would be otherwise millions of pixels
+p224r63_2011res10<-aggregate(p224r63_2011, fact=10) 
+p224r63_2011res100<-aggregate(p224r63_2011, fact=100)
+
+#Exercise: same image -> original, x10, x100
+par(mfrow=c(3,1))
+plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011res10, r=4, g=3, b=2, stretch="Lin")
+plotRGB(p224r63_2011res100, r=4, g=3, b=2, stretch="Lin")
