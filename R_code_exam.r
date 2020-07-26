@@ -549,3 +549,121 @@ cld <- colorRampPalette(c('darkblue','white','red'))(100)
 plot(difdvi, col=cld)
 #hist() function computes a histogram of the given data values
 hist(difdvi)
+
+
+#8_r_code_pca_remote_sensing.R.##################################################################################
+####################################################################################
+setwd("C:/lab/") 
+
+
+library(raster)
+library(RStoolbox)
+library(ggplot2)
+
+# raster function "brick" to import images (multi-layer file, because of superimposed bands)
+p224r63_2011 <- brick("p224r63_2011_masked.grd")
+
+# plotRGB
+#b1 blue
+#b2 green
+#b3 red
+#b4 NIR
+#b5 SWIR (short wave infrared)
+#infrared has 3 parts: one close to red, one in other place, one as thermal infrared.
+#b6 thermal infrar
+#b7 SWIR
+#b8 panchromatic
+
+#RGB (2011's image):
+plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin") 
+#ggRGB calculates RGB color composite raster for plotting with ggplot2
+ggRGB(p224r63_2011,5,4,3)
+
+#same for 1988's image
+p224r63_1988 <- brick("p224r63_1988_masked.grd")
+plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin") 
+
+#to  have a look to the two plots together we use again par() function (1 row 2 columns)
+par(mfrow=c(1,2))
+plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin") 
+plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin") 
+#the increase of the pink part is due to loss of forest, led by the increase in agricultural activity
+
+#we want to plot all the bands to see all the information together
+names(p224r63_2011)   #to know the names of the different bands in that file
+#we are going, through $, to link the bands to the image
+plot(p224r63_2011$B1_sre, p224r63_2011$B2_sre)
+
+#p224r63_2011    #gives us the number of contained data, which is about 4 million, we need to decrease the size of the file since it's to heavy to work on it
+#dimensions : 1499, 2967, 4447533, 7  (nrow, ncol, ncell, nlayers)
+
+#decrease the resolution by a 10 factor -> res=resempling the resolution, fact=10 because we are decreasing it by a factor of 10
+p224r63_2011_res <- aggregate(p224r63_2011, fact=10)
+
+#library(RStoolbox) is now needed...
+#rasterPCA function calculates R-mode PCA (Principal Component Analysis) for RasterBricks or RasterStacks and returns a RasterBrick with multiple layers of PCA scores
+#PCA is useful to disentangle relationships among many variables (as found in a set of raster maps in a map list) and to reduce the amount of data needed to define the relationships
+p224r63_2011_pca <- rasterPCA(p224r63_2011_res)
+
+#plotting the map (again, $ simbol gives us a connection with a soecific component of the related file)
+plot(p224r63_2011_pca$map)
+
+#we set our colour palette and plot the 2011's map
+cl <- colorRampPalette(c('dark grey','grey','light grey'))(100) # 
+plot(p224r63_2011_pca$map, col=cl)
+
+summary(p224r63_2011_pca$map, col=cl)  #is a generic function used to produce result summaries of the results of various model fitting functions
+
+pairs(p224r63_2011)
+
+plotRGB(p224r63_2011_pca$map, r=1, g=2, b=3, stretch="Lin")
+
+#we do the same for 1988
+p224r63_1988_res <- aggregate(p224r63_1988, fact=10)
+p224r63_1988_pca <- rasterPCA(p224r63_1988_res) 
+plot(p224r63_1988_pca$map, col=cl)
+summary(p224r63_1988_pca$model)
+pairs(p224r63_1988)
+
+#operating then the difference to highlight the changes
+difpca <- p224r63_2011_pca$map - p224r63_1988_pca$map
+plot(difpca)
+
+#final plot 
+cldif <- colorRampPalette(c('lightblue','black','orange'))(100) # 
+plot(difpca$PC1, col=cldif)
+
+#9_R_code_faPAR.r##################################################################################
+####################################################################################
+#how to look at chemical features by satellite images
+
+setwd("C:/lab/") 
+
+library(raster)
+library(rasterVis)
+library(rasterdiv)
+
+#we are going to use copNDVI (copernicus NDVI) 
+#remember that plants dispaly high reflectance in NIR and low in red (and blue)
+#no plants: lower NIR higher RED
+#let's have a look to the Copernicus image by plotting it
+plot(copNDVI)
+#reclassify() function (re)classifies groups of values to other values
+#cbind() function combines vector, matrix or data frame by columns
+
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
+levelplot(copNDVI)
+
+#faPAR is the Fraction of Absorbed Photosynthetically Active Radiation ( = fraction of the solar radiation absorbed by live leaves to perfor photosynthesis)
+faPAR10 <- raster("faPAR10.tif")  #raster to import the data. 10 because used a factor of 10 to aggregate the pixels
+levelplot(faPAR10)
+#we have less values on the northern side rather than equator because now we are taking into account the photosynthetic activity
+
+#save the as pdf
+pdf("copNDVI.pdf")
+levelplot(copNDVI)
+dev.off()
+
+pdf("faPAR10.pdf")
+levelplot(faPAR10)
+dev.off()
