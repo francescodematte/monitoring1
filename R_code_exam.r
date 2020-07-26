@@ -667,3 +667,59 @@ dev.off()
 pdf("faPAR10.pdf")
 levelplot(faPAR10)
 dev.off()
+
+
+#10_R_code_radiance.r#################################################################################
+####################################################################################
+#R_code_radiance.r
+
+
+library(raster)
+
+#we will create on our own the data to work on,so, we won't need to set the working directory to import data from outside r
+
+#in general when we just want to have fun or make some practice we name our object "toy"
+#we create a new raster with 2 columns and 2 rows
+toy <- raster(ncol=2, nrow=2, xmn=1, xmx=2, ymn=1, ymx=2)       #mn and mx= minimum and maximum values (related to x and y)
+#values(toy) contains the data that we created, the c function is to insert more then one number
+values(toy) <- c (1.08, 1.24, 1.23, 3.45)
+
+#we can now plot(toy)
+plot(toy)
+#text() function is to add a title, digits() function is to indicate how many significant digits of numeric values to show
+text(toy, digits=2)
+#stretch() function provides the desired output range
+toy2bits <- stretch(toy,minv=0,maxv=3)
+#Both mode and storage.mode return a character string giving the (storage) mode of the object
+storage.mode(toy2bits[]) = "integer"
+plot(toy2bits)
+text(toy2bits, digits=2)
+
+#with 4bits
+toy4bits <- stretch(toy,minv=0,maxv=15)
+storage.mode(toy4bits[]) = "integer"
+plot(toy4bits)
+text(toy4bits, digits=2)
+
+#with8
+toy8bits <- stretch(toy,minv=0,maxv=255)
+storage.mode(toy8bits[]) = "integer"
+plot(toy8bits)
+text(toy8bits, digits=2)
+
+#to plot all of them one after the other
+par(mfrow=c(1, 4))
+plot(toy)
+text(toy, digits=2)
+
+plot(toy2bits)
+text(toy2bits, digits=2)
+
+plot(toy4bits)
+text(toy4bits, digits=2)
+
+plot(toy8bits)
+text(toy8bits, digits=2)
+
+
+
