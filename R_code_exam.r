@@ -722,4 +722,180 @@ plot(toy8bits)
 text(toy8bits, digits=2)
 
 
+#11_faPAR10.r#################################################################################
+####################################################################################
 
+
+setwd("C:/lab/") 
+
+#the original faPAR from Copernicus has a dimension of 2 GB, let's see how smaller is the file faPAR10
+load("faPAR.RData")
+
+ls()       #ls() function to list the datasets we have
+
+
+library (raster)
+library (rasterdiv)
+
+#we use writeRaster() function to write a file
+#.tif file is an image saved in a high-quality graphics format. It is often used for storing images with many colors, typically digital photos, and includes support for layers and multiple pages
+writeRaster(copNDVI, "copNDVI.tif")
+
+###exercise###
+library(rasterVis)
+
+levelplot(faPAR10)
+
+###regression model between faPAR and NDVI###
+#we start with 2 variables: erosion of soil (kg / m2) and heavy metals (ppm)
+erosion <- c(12, 14, 16, 24, 26, 40, 55, 67)
+hm <- c(30, 100, 150, 200, 260, 340, 460, 600)
+
+#let's plot the two variables. pch (point character)= is the simbol, depends on the number we assign it ( the lists are online)
+plot(erosion, hm, col="red", pch=19, xlab="erosion", ylab="heavy metals", cex=2)
+#we assign to the vector model1 the linear model of the relation between the two variables through the function lm()
+model1 <- lm(hm ~ erosion) 
+summary(model1)
+#y=bx+a, a is the intercept, y is hm, x is erosion, b is the slope)
+#R-squared is higher when the relation between the variables is higher (far from being random)
+#p-values means there are no real relationship between variables. The probability  "p<0.01" means that there's a probability lower than one over hundred times that we re observing a merely random phenomenon
+#abline() function can be used to add vertical, horizontal or regression lines to a graph
+abline (model1)
+
+
+
+setwd("C:/lab/")
+
+library(raster)
+library(rasterVis)
+
+faPAR10 <- raster("C:/lab/faPAR10.tif")
+plot(faPAR10)
+plot(copNDVI)
+
+copNDVI <- reclassify(copNDVI, cbind(253:255, NA), right=TRUE)
+library(sf) # to call st_* functions
+random.points <- function(x,n)
+{
+lin <- rasterToContour(is.na(x))
+pol <- as(st_union(st_polygonize(st_as_sf(lin))), 'Spatial') # st_union to dissolve geometries
+pts <- spsample(pol[1,], n, type = 'random')
+}
+pts <- random.points(faPAR10,1000)
+
+copNDVIp <- extract(copNDVI,pts)
+faPAR10p <- extract(faPAR10,pts)
+
+#photosynthesys vs biomass
+model2 <- lm(faPAR10p ~ copNDVIp)
+
+plot(copNDVIp, faPAR10p, col="green", xlab="biomass", ylab="photosynthesis")
+abline(model2, col="red")
+plot(copNDVIp,faPAR10p)
+
+
+#12R_code_EBVs.r#################################################################################
+####################################################################################
+### diversity measurement
+
+setwd("C:/lab/") 
+
+install.packages("RStoolbox")
+library(raster)
+
+library(RStoolbox) # this is for PCA
+
+sntpca <- rasterPCA(snt)   #PCA 
+
+#to import the image we use the brick() function 
+snt <- brick("snt_r10.tif")
+
+plot(snt)
+#B1 blue
+#B2 green
+#B3 red
+#B4 NIR
+
+#R3 G2 B1
+# as human eye would see it
+plotRGB(snt,3,2,1, stretch="lin")
+
+#let's use the near infra red on top of red component
+plotRGB(snt,4,3,2, stretch="lin")
+#since vegetation is highly reflecting in NIR, we have the vegetation coloured in red
+
+#pairs() function produce a matrix of scatterplots
+pairs(snt)
+summary(sntpca$model) #Summary (or descriptive) statistics are the first figures used to represent nearly every dataset
+
+plot(sntpca$map)
+
+plotRGB(sntpca$map, 1, 2, 3, stretch="lin")
+
+#matrix() function creates a matrix from the given set of values
+
+window <- matrix(1, nrow = 5, ncol = 5)
+#focal() function uses values in a neighborhood of cells around a focal cell, and computes a mean value that is stored in the focal cell of the output RasterLayer (in this case the standard deviation)
+sd_snt <- focal(sntpca$map$PC1, w=window, fun=sd)
+cl <- colorRampPalette(c('dark blue','green','yellow','purple'))(100) # 
+plot(sd_snt, col=cl)
+#we can then show the two plots in 1 line 2 columns on the same graphic image through:
+par(mfrow=c(1,2))
+
+plotRGB(snt,4,3,2, stretch="lin")
+
+plot(sd_snt, col=cl)
+
+
+###day 2:cladonia
+
+setwd("C:/lab/")
+
+library(raster)
+
+clad <- brick("cladonia_stellaris_calaita.JPG")
+
+plotRGB(clad, 1,2,3, stretch="lin")
+#window to select one window, calculate the sd (standard deviation) and report the sd in one pixel, then the whole window is gradually shifted and reports the sd in the pixel next to the other and so on
+#number 1 is an arbitrary value.
+window <- matrix(1, nrow = 3, ncol = 3)
+window
+#after having selected the size of the window, we do the calculation
+#again, we use focal function that calculate the values of several focal cells
+#the clads are related (one line connect them) 
+pairs(clad)
+
+
+#PCA = Principal component analysis (PCA) is a technique for reducing the dimensionality of such datasets, increasing interpretability while minimizing information loss. 
+
+library(RStoolbox)
+
+
+cladpca <- rasterPCA(clad)
+
+summary(cladpca$model)    #we can use cladpca as vector
+
+#inside cladpca there's a map with PC1, PC2, PC3
+plotRGB(cladpca$map, 1, 2, 3, stretch="lin")
+
+sd_clad <- focal(cladpca$map$PC1, w=window, fun=sd)
+
+PC1_agg <- aggregate(cladpca$map$PC1, fact=10)   #we aggregate to reduce the size of the layer PC1 to accelerate the calculation of the standard deviation
+sd_clad_agg <- focal(PC1_agg, w=window, fun=sd)
+
+#we try now to make it more evident
+
+#we plot both the diversity of the original one, and the diversity on the aggregated pc1
+
+par(mfrow=c(1,2))   #for not aggregated measure and aggregated one,respectively
+cl <- colorRampPalette(c('yellow','violet','black'))(100) #
+plot(sd_clad, col=cl)
+plot(sd_clad_agg, col=cl)
+
+#in this way we can instead see the plot of the variation in structure and the original image
+
+par(mfrow=c(1,2))
+cl <- colorRampPalette(c('yellow','violet','black'))(100) #
+plotRGB(clad, 1,2,3, stretch="lin")
+plot(sd_clad, col=cl)
+# plot(sd_clad_agg, col=cl)
