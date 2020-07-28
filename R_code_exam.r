@@ -1011,3 +1011,172 @@ plot(difsnow, col=cldiff)
 predicted.snow.2025.norm <- raster("predicted.snow.2025.norm.tif")
 plot(predicted.snow.2025.norm, col=cl)
 
+
+
+#14_R_code_no2.r#################################################################################
+####################################################################################
+#R_code_no2.r
+
+#exercise on the reduction of no2 due to the lockdown, during the covid19 emergency
+
+#set the working directory (folder no2, inside lab folder)
+setwd("C:/lab/no2") 
+
+#we can import again the data through the lapply(). Recall that this function applies a certain function to a list of files
+
+#we need to create a list of files we will identify trough a shared pattern
+rlist <- list.files(pattern="EN_00")
+
+#we can now use the stack function to connect the images on layers.To do this we need the library(raster)
+library(raster)
+import <- lapply(rlist,raster)
+EN <- stack(import)
+
+cl <- colorRampPalette(c('blue','salmon','light green'))(100)
+plot(EN, col=cl) #the data come from ESA sentinel
+
+
+par(mfrow=c(1,2))
+plot(EN$EN_0001, col=cl)
+plot(EN$EN_0013, col=cl)
+
+#let's try to make use of RGB
+#B1 blue
+#B2 green
+#B3 red
+#B4 NIR
+plotRGB(EN, r=1, g=7, b=13, stretch="lin")
+#if we have red values we have high values in the first image
+#if we have blue values we have high values in the last image (13)
+#if we have gren values we have high values in the mid period
+#yellow in italy is a sum.. we had presence during the whole time
+
+# close the window
+
+#difference map (last vs first)
+#last and first are not the best images to be compared, but still interesting
+dif<- EN$EN_0013 - EN$EN_0001
+cld <- colorRampPalette(c('blue','white','red'))(100)
+plot(dif, col=cld)
+
+
+#let's see the boxplot() function ( it elaborates box and whisker (the lines) of some given data)
+boxplot(EN)
+boxplot(EN, outline=F)
+boxplot(EN,horizontal=T,outline=F)
+boxplot(EN,horizontal=T,axes=T,outline=F)   #final boxplot
+
+#we can plot the data of first and last image
+#if you put the first image(January) in the x and last (March) in the y you should highlight a decrease
+#most of the high values should be under the line 1:1 (bisector of the first quadrant, or y=x)
+plot(EN$EN_0001, EN$EN_0013)
+
+abline(0,1, col="red")  #we can draw the bisector with the command abline
+
+
+#15_R_crop_an_image.r#################################################################################
+####################################################################################
+setwd("C:/lab/")
+
+install.packages("ncdf4")
+
+library(raster)
+library(ncdf4)
+
+snow <- raster("c_gls_SCE_202005280000_NHEMI_VIIRS_V1.0.1.nc")
+cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
+
+ext <- c(0, 20, 35, 50)  #coordinates
+zoom(snow, ext=ext)
+
+#let's crop the image
+snowitaly <- crop(snow, ext)
+
+#you can also use drawextent
+zoom(snow, ext=drawExtent())
+
+
+#16R_code_interpolation.r#################################################################################
+####################################################################################
+#interpolation: using data that we measured in the field (Martina Viti bachelor' thesis)
+setwd("C:/lab/") 
+
+install.packages("spatstat")
+
+
+library(spatstat) #for interpolation
+
+#we are going to import the data. It is just a table (no raster, no brick are needed)
+# ; means the separator will be a semi-column, each column has an header so is TRUE
+inp <- read.table("dati_plot55_LAST3.csv", sep=";", head=T)
+
+#let's proceed estimating the rest of the canopy cover where there's no data
+#attach is to start working with the dataset
+attach(inp)
+plot(X,Y)
+
+#to know minimum and maximum of X and Y
+summary(inp)
+#with ppp() function we are going to establish what X, Y correspond to and then what is their range
+inppp <- ppp(x=X,y=Y,c(716000,718000),c(4859000,4861000))
+
+#we can proceed using it to estimate the canopy cover, but we first use marks() function to lable the single point with the data we want
+#we put into the inppp the canopy cover (how is it called? function names(inp) to know it)
+names(inp)
+marks(inppp) <- Canopy.cov
+
+#we don't need to use $ to select the column because we attached the file
+#Smooth() function is from library(spatstat). Allows us to interpolate data where we don't have it.
+#it calculates the values in between two given points and then the one between the one created and the one given and so on.
+canopy <- Smooth(inppp)
+plot(canopy)
+points(inppp, col="green")
+
+#we can measure the lichens on the tree and see how much tree's surface they cover
+marks(inppp) <- cop.lich.mean
+lichs <- Smooth(inppp)
+plot(lichs)
+points(inppp)
+
+#we make use of the par function to show our plots in one image
+par(mfrow=c(1,3))
+plot(canopy)
+points(inppp)
+plot(lichs)
+points(inppp)
+
+#we can also make a final plot
+plot(Canopy.cov, cop.lich.mean, col="red", pch=19, cex=2)
+
+######
+
+# Data psammophilus species (Giacomino)
+#psammophilus means that are adapted to arid environments (dell'ambiente dunale e retrodunale)
+#as before we have a file that is just a table (no need to use raster or brick)
+inp.psam <- read.table("dati_psammofile.csv", sep=";", head=T)
+
+attach(inp.psam)
+
+head(inp.psam)
+summary(inp.psam)    #C.org is the amount of carbon. the higher it is the higher the amount of organisms
+
+#let's see the point in space through this function 
+plot(E,N)
+
+#spatstat doesn't work well with spaces between different groups of data (if some sampling are far from each other)
+
+#the range of different points x=east and y=north.
+#to know the range summary(inp.psam.) we use a bit of a larger area
+inp.psam.ppp <- ppp(x=E,y=N,c(356450,372240),c(5059800,5064150))
+
+#the second step is to explain the variable we are going to use.
+
+#marks() function to lable the single point with the data we want
+marks(inp.psam.ppp) <- C_org
+
+#once again Smooth() function to calculate the means between points
+C <- Smooth(inp.psam.ppp)
+plot(C)
+points(inp.psam.ppp)
+
+#this is the idea to implement measured data to other parts where no samples were collected
