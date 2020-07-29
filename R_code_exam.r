@@ -1195,7 +1195,7 @@ file <- system.file("external/species.shp", package="sdm")
 species <- shapefile(file)
 
 species
-species$Occurrence
+species$Occurrence  #to see the data related to occurrences only (0-1)
 plot(species)
 
 #occurrence=1 we only have the presence (binary, qualitative index)
@@ -1203,23 +1203,22 @@ plot(species[species$Occurrence == 1,],col='blue',pch=16)   #occurrence=0 is the
 
 points(species[species$Occurrence == 0,],col='red',pch=16)
 
-#predictors
-# environmental variables
+#predictors -> discriminating between different environmental variables
+
 path <- system.file("external", package="sdm") 
-#path because assigned as vector, pattern to recall something shared from the files (asc is an extention)
-#lst=list
-lst <- list.files(path=path,pattern='asc$',full.names = T) #
+
+lst <- list.files(path=path,pattern='asc$',full.names = T)  # pattern to recall something shared from the files (asc is an extention)  #lst=list
 lst
-#we can make a stack (connecting different files in one
+#we can make a stack connecting different files in one
 preds <- stack(lst)
 
 cl <- colorRampPalette(c('blue','orange','red','yellow')) (100)
 plot(preds, col=cl)
 
 plot(preds$elevation, col=cl)
-#occurrence=1 we only have the presence
-points(species[species$Occurrence == 1,], pch=16)
-#occurrence=0 is the absence
+
+points(species[species$Occurrence == 1,], pch=16)   #again, 1 and 0 values are respectively indicating species presence and absence
+
 points(species[species$Occurrence == 0,], pch=16)
 
 plot(preds$temperature, col=cl)
