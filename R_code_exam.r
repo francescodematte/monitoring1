@@ -46,8 +46,8 @@ install.packages("GGally")
 #library( ) function is to be able to start using the functions 
 library(sp)  #the same function is given by require()
 library(GGally)
-#meuse is provided by package sp. It is a data set comprising of four heavy metals measured in the top soil in a flood plain along the river Meuse (a river flowing trough France, Belgium and Netherland, through cities like Maastricht, Liegi and Rotterdam)
-#data( ) allow users to load datasets to then work on them in the workspace
+#meuse is provided by package sp. It is a dataset comprising of four heavy metals measured in the top soil in a flood plain along the river Meuse (a river flowing trough France, Belgium and Netherland, through cities like Maastricht, Liegi and Rotterdam)
+#data( ) allows users to load datasets and to work on them in the workspace
 data(meuse)
 #attach( ) is to connect the dataset to the r search path
 attach(meuse)
@@ -56,7 +56,7 @@ attach(meuse)
 meuse
 plot(cadmium,zinc)
 
-#There are 2 ways to see the names of the variable
+#There are 2 ways to see the names of the variables
 #names( ) is used to see the names of the different variables
 names(meuse)
 #head( ) is used to see the first six rows of the dataset
@@ -66,7 +66,7 @@ head(meuse)
 #cex to change the size of the character
 plot(cadmium,zinc,pch=15,col="red",cex=2)
 
-#Exercise: make all the paiwise possible plots of the dataset)
+#Exercise: make all the possible  pairwise plots of the dataset)
 #plot(x,cadmium)
 #plot(x,zinc)
 #plot,...
@@ -84,7 +84,7 @@ pairs(meuse[,3:6])
 pairs(meuse[,3:6], pch=11, col="green", cex=0.7)
 
 
-#ggpairs( ) is a GGally package with prettyfied graphs
+#ggpairs( ) is a GGally package with prettier graphs
 ggpairs(meuse[,3:6])
 
 
@@ -100,7 +100,7 @@ head(meuse)
 
 
 #the function coordinates( ) says to R that the coordinates of the dataset "meuse" are x and y
-coordinates(meuse) = x+y      
+coordinates(meuse) =  ~x+y      
 plot(meuse)
 #spplot() is within lattice  plot methods for spatial data (multivariate correlations)
 spplot(meuse, "zinc")    #to relate just to 1 variable and its legenda.
@@ -113,7 +113,7 @@ spplot(meuse, "copper", main="copper concentration")
 
 #the function bubble() boosts the size of points
 bubble(meuse, "zinc")
-bubble(meuse, "zinc", main="Zinc concentration")
+bubble(meuse, "zinc", main="zinc concentration")
 
 ###Exercise: bubble copper in red
 bubble(meuse, "copper", col="red", main= "Copper concentration")
@@ -121,13 +121,15 @@ bubble(meuse, "copper", col="red", main= "Copper concentration")
 
 ####Importing new data
 
-#download file covid_agg.csv from our teaching site and put it into folder lab (no capital letters)
+#download file covid_agg.csv from our teaching site and put it into the folder "lab" (no capital letters)
 
 #setting the working directory (where data is coming from and going to)
 #for windows setwd("C:/lab/")
+
 setwd("C:/lab/")
+
 #the function read.table("covid_agg.csv", head=T) is to open and read the file, with "" because importing a file from outside R
-# <- is to assign the file to a vector. In this way we assign the file the name we want. From that moment on R will recognise it by that name 
+# <- is to assign the file to a vector. In this way we assign the file the name we want. From that moment on R will recognise it by that name
 covid <- read.table("covid_agg.csv", head=T)  #where head=T or head=TRUE is when we have a first row with no numbers
 #head of our new vector indicates the first 6 rows of the file
 head(covid)  #to show the first 6 rows
@@ -137,12 +139,12 @@ attach(covid)
 ls() 
 
 ###Using ggplo2###
-library(ggplot2) #requireto have already install.packages("ggplot2")
-#mpg is a dataset that contains a subset of the fuel economy data that the EPA
+library(ggplot2) #we have already installed ggplot2"
+#mpg is a dataset that contains a subset of the fuel economy data 
 data(mpg) #to access to it
 head(mpg) #to see the first 5 lines
 #key components: data, aes, geometry
-#data in this case is mpg, we close both the () after x and y cuz the geometry is by itself apart
+#data in this case is mpg, we close both the () after x and y because the geometry is by itself apart
 ggplot(mpg, aes(x=displ, y=hwy)) + geom_point()
 
 plot(country, cases)  #where country and cases are respectively x and y coordinates
@@ -183,27 +185,27 @@ ggplot(covid, aes(x=lon,y=lat, size=cases)) + geom_point()
 #Open R#
 #set the working directory
 setwd("C:/lab/")  
-#The vegan package contains all common ordination methods, such as principal component analysis, correspondence analysis or detrended correspondence analysis 
 
+#The vegan package contains all common ordination methods, such as principal component analysis, correspondence analysis or detrended correspondence analysis 
 install.packages("vegan")
 library(vegan)
 
-#"biomes" is the name that we assign to the data by the vector, read.table is to open and analyze the data, "biomes.csv" is the name of the file, head=T because the first row is words only, sep="," is the separator between the names of the words in the row
+#"biomes" is the name that we assign to the data by the vector, read.table is to open and analyze the data, "biomes.csv" is the name of the file, head=T because the first row is composed of words only, sep="," is the separator between the names of the words in the row
 biomes<-read.table("biomes.csv",head=T,sep=",")
 
 #to have a look at the dataset: head(biomes)or view(biomes)
 head(biomes)
 
-#multivariate analysis: decorana= detrended correspondence analysis
+#multivariate analysis: decorana= "detrended correspondence analysis"
 multivar<- decorana(biomes)
 
 #we can then realise the plot of the multivariate analysis
 plot(multivar)
 
-#we are now seeing the graph from 1 point of view, but we can see it from others (thinks to the paintings of Dalì)
+#we are now seeing the graph from 1 point of view, but we can see it from others (think to the paintings of Dalì)
 #if we just put multivar, we can see the results of the analysis
 multivar
-#eigenvalues= the percentage of data that we are able to see from a specific perspective
+#eigenvalues= the percentage of data (the quantity of information) that we are able to see from a specific perspective
 #we got DCA1=0.5117 DCA2=0.3036,  51%+30%=81%  (the total amount of variation we can perceive from this perspective)
 
 #let's use other data to then sum up the same biomes
@@ -225,7 +227,7 @@ ordispider(multivar, type, col=1:4, label = T)
 #set the working directory
 setwd("C:/lab")
 
-#raster is designed for reading, writing, manipulating, analyzing and modelling of spatial data (the format with pixels), (remeber the name, deriving from rastrum)
+#raster is designed for reading, writing, manipulating, analyzing and modelling of spatial data (the format with pixels), (remember the name, deriving from rastrum=rastrello in latino)
 install.packages("raster")
 #RStoolbox is a package for remote sensing image processing and analysis, such as calculating spectral indices, principal component transformation
 install.packages("RStoolbox")
@@ -237,7 +239,7 @@ library(raster)
 # the file.grd = grid, network of images
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
-#we use the function plot to make the plot of the uploaded image, we set the colours with the vector cl and realise the final plot with those colors, by using the raster function colorRampPalette
+#we use the function plot to make the plot of the uploaded image, we set the colours with the vector cl and realise the final plot with those colors, by using the raster function "colorRampPalette"
 plot(p224r63_2011)
 cl <- colorRampPalette(c('black','grey','light grey'))(100) 
 plot(p224r63_2011, col=cl)
@@ -298,7 +300,7 @@ plot(p224r63_2011$B4_sre, col=cln)
 
 #plotting the 3 bands together and see the image the way human eye would see it...
 #RGB (red green blue): B1: blue; B2:green; B3:red.
-#stretch="Lin" stretch linear= to make the differetn colours gradually blur into each other
+#stretch="Lin" stretch linear= to make the different colours gradually blur into each other
 #every pixel is 30 km wide
 #Bands of landsat
 #B1: blue
@@ -327,7 +329,7 @@ setwd("C:/lab/")
 ls()
 
 library(raster)
-#brick () function to create a multi-layered raster object. Image within brackets because importing it from the outside!  We assigned it a name that r will later recognise
+#brick () function to create a multi-layered raster object. Image within brackets because we are importing it from outside! We assigned it a name that r will later recognise
 p224r63_1988 <- brick("p224r63_1988_masked.grd")
 plot(p224r63_1988)
 
@@ -349,7 +351,7 @@ plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="Lin")
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="Lin")
 
 #How to better visualize the noise(due to evapotraspiration, humidity and clouds)present in the image?
-#Stretching more the colours and means enhancing the noise...
+#Stretching more the colours means enhancing the noise...
 par(mfrow=c(2,1))
 plotRGB(p224r63_1988, r=4, g=3, b=2, stretch="hist")   #histogram stretching, a mathematical tool to enhance contrast from different pixels
 plotRGB(p224r63_2011, r=4, g=3, b=2, stretch="hist")
@@ -379,7 +381,7 @@ plot(diff)
 
 #changing the grain(pixels)
 #when you change the dimension of the pixels you talk about resampling (res)  #different grain size means different spatial resolution. At different spatial resolution the structure and properties of ecosystems can be seen differently, thus different info are provided 
-#fact=10 means that we are increasing 10 times the size of each pixels. We want to decrease the resolution because there would be otherwise millions of pixels
+#fact=10 means that we are increasing 10 times the size of each pixel. We want to decrease the resolution because there would be otherwise millions of pixels
 p224r63_2011res10<-aggregate(p224r63_2011, fact=10) 
 p224r63_2011res100<-aggregate(p224r63_2011, fact=100)
 
@@ -470,9 +472,9 @@ dev.off()
 #nutrient cycle
 #proxies
 
-#rasterdiv() function is very useful to calculate indices of diversity on numerical matrices based on information theory.
+#rasterdiv package is very useful to calculate indices of diversity on numerical matrices based on information theory.
 install.packages("rasterdiv")
-#rasterVis() function comprehend methods for enhanced visualization and interaction with raster data
+#rasterVis()  package comprehends methods for enhanced visualization and interaction with raster data
 install.packages("rasterVis")
 
 library(rasterVis)
@@ -503,8 +505,8 @@ levelplot(copNDVI100)
 setwd("C:/lab/")  
 library(raster)
 #uploading the two different images, brick() function to create a RasterBrick (multi_layered image)
-defor1 <- brick("defor1_.jpg")
-defor2 <- brick("defor2_.jpg")
+defor1 <- brick("defor1.jpg")
+defor2 <- brick("defor2.jpg")
 
 #band1: NIR
 #band2: red
@@ -524,7 +526,7 @@ plotRGB(defor2, r=1, g=2, b=3, stretch="Lin")
 #band1: NIR    defor1_.1
 #band2: red    defor1_.2
 #dvi=difference vegetation index. 
-dvi1 <- defor1$defor1_.1 - defor1$defor1_.2  #the simbol $ allows us to select a band only from our multilayered image 
+dvi1 <- defor1$defor1.1 - defor1$defor1.2  #the simbol $ allows us to select a band only from our multilayered image 
  
  
  #same for defor2
@@ -532,7 +534,7 @@ dvi1 <- defor1$defor1_.1 - defor1$defor1_.2  #the simbol $ allows us to select a
  #band1: NIR    defor2_.1
  #band2: red     defor2_.2
  
- dvi2 <- defor2$defor2_.1 - defor2$defor2_.2
+ dvi2 <- defor2$defor2.1 - defor2$defor2.2
 
 #we then create the palette with the colours we want to highlight the data with
 cl <- colorRampPalette(c('darkpurple','yellow','red','black'))(100)
