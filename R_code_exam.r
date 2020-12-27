@@ -562,19 +562,17 @@ library(raster)
 library(RStoolbox)
 library(ggplot2)
 
-# raster function "brick" to import images (multi-layer file, because of superimposed bands)
+# raster function "brick" to import images (multi-layered file, because of superimposed bands)
 p224r63_2011 <- brick("p224r63_2011_masked.grd")
 
 # plotRGB
 #b1 blue
 #b2 green
 #b3 red
-#b4 NIR
-#b5 SWIR (short wave infrared)
-#infrared has 3 parts: one close to red, one in other place, one as thermal infrared.
-#b6 thermal infrar
-#b7 SWIR
-#b8 panchromatic
+#b4 NIR (near infrared)
+#b5 thermal infrar
+#b6 SWIR (short-wave infrared)
+#b7 panchromatic
 
 #RGB (2011's image):
 plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin") 
@@ -585,15 +583,15 @@ ggRGB(p224r63_2011,5,4,3)
 p224r63_1988 <- brick("p224r63_1988_masked.grd")
 plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin") 
 
-#to  have a look to the two plots together we use again par() function (1 row 2 columns)
+#to  have a look to the two plots together we use again par() function (1 row,2 columns)
 par(mfrow=c(1,2))
 plotRGB(p224r63_1988, r=5, g=4, b=3, stretch="Lin") 
 plotRGB(p224r63_2011, r=5, g=4, b=3, stretch="Lin") 
 #the increase of the pink part is due to loss of forest, led by the increase in agricultural activity
 
-#we want to plot all the bands to see all the information together
+#we want to plot all the bands to see all the informations together
 names(p224r63_2011)   #to know the names of the different bands in that file
-#we are going, through $, to link the bands to the image
+#we are going, through "$" symbol, to link the bands to the image
 plot(p224r63_2011$B1_sre, p224r63_2011$B2_sre)
 
 #p224r63_2011    #gives us the number of contained data, which is about 4 million, we need to decrease the size of the file since it's to heavy to work on it
@@ -607,14 +605,14 @@ p224r63_2011_res <- aggregate(p224r63_2011, fact=10)
 #PCA is useful to disentangle relationships among many variables (as found in a set of raster maps in a map list) and to reduce the amount of data needed to define the relationships
 p224r63_2011_pca <- rasterPCA(p224r63_2011_res)
 
-#plotting the map (again, $ simbol gives us a connection with a soecific component of the related file)
+#plotting the map (again, $ simbol gives us a linkage with a specific component of the related file)
 plot(p224r63_2011_pca$map)
 
 #we set our colour palette and plot the 2011's map
 cl <- colorRampPalette(c('dark grey','grey','light grey'))(100) # 
 plot(p224r63_2011_pca$map, col=cl)
 
-summary(p224r63_2011_pca$map, col=cl)  #is a generic function used to produce result summaries of the results of various model fitting functions
+summary(p224r63_2011_pca$map, col=cl)  #it is a generic function used to produce summaries of the results of various model fitting functions
 
 pairs(p224r63_2011)
 
@@ -646,8 +644,8 @@ library(rasterVis)
 library(rasterdiv)
 
 #we are going to use copNDVI (copernicus NDVI) 
-#remember that plants dispaly high reflectance in NIR and low in red (and blue)
-#no plants: lower NIR higher RED
+#remember that plants display high reflectance in NIR and low in red and blue
+#no plants: lower NIR higher red
 #let's have a look to the Copernicus image by plotting it
 plot(copNDVI)
 #reclassify() function (re)classifies groups of values to other values
@@ -656,12 +654,12 @@ plot(copNDVI)
 copNDVI <- reclassify(copNDVI, cbind(253:255, NA))
 levelplot(copNDVI)
 
-#faPAR is the Fraction of Absorbed Photosynthetically Active Radiation ( = fraction of the solar radiation absorbed by live leaves to perfor photosynthesis)
-faPAR10 <- raster("faPAR10.tif")  #raster to import the data. 10 because used a factor of 10 to aggregate the pixels
+#faPAR is the Fraction of Absorbed Photosynthetically Active Radiation ( fraction of the solar radiation absorbed by living leaves to perform photosynthesis)
+faPAR10 <- raster("faPAR10.tif")  #raster to import the data, 10 because we used a 10 factor to aggregate the pixels
 levelplot(faPAR10)
 #we have less values on the northern side rather than equator because now we are taking into account the photosynthetic activity
 
-#save the as pdf
+#save the image as pdf
 pdf("copNDVI.pdf")
 levelplot(copNDVI)
 dev.off()
@@ -680,7 +678,7 @@ library(raster)
 
 #we will create on our own the data to work on,so, we won't need to set the working directory to import data from outside r
 
-#in general when we just want to have fun or make some practice we name our object "toy"
+#in general, when we just want to have fun or make some practice, we name our object "toy"
 #we create a new raster with 2 columns and 2 rows
 toy <- raster(ncol=2, nrow=2, xmn=1, xmx=2, ymn=1, ymx=2)       #mn and mx= minimum and maximum values (related to x and y)
 #values(toy) contains the data that we created, the c function is to insert more then one number
@@ -730,7 +728,7 @@ text(toy8bits, digits=2)
 
 setwd("C:/lab/") 
 
-#the original faPAR from Copernicus has a dimension of 2 GB, let's see how smaller is the file faPAR10
+#the original faPAR from Copernicus has a dimension of 2 GB, let's see how smaller the file faPAR10 is
 load("faPAR.RData")
 
 ls()       #ls() function to list the datasets we have
@@ -759,8 +757,8 @@ plot(erosion, hm, col="red", pch=19, xlab="erosion", ylab="heavy metals", cex=2)
 model1 <- lm(hm ~ erosion) 
 summary(model1)
 #y=bx+a, a is the intercept, y is hm, x is erosion, b is the slope)
-#R-squared is higher when the relation between the variables is higher (far from being random)
-#p-values means there are no real relationship between variables. The probability  "p<0.01" means that there's a probability lower than one over hundred times that we re observing a merely random phenomenon
+#R-squared is higher when the relation between the variables is higher (far from being random). Its values are comprised between -1 and 1.
+#The probability  "p<0.01" means that there's a probability lower than one over hundred times that we re observing a merely random phenomenon
 #abline() function can be used to add vertical, horizontal or regression lines to a graph
 abline (model1)
 
@@ -802,12 +800,8 @@ plot(copNDVIp,faPAR10p)
 
 setwd("C:/lab/") 
 
-install.packages("RStoolbox")
 library(raster)
-
 library(RStoolbox) # this is for PCA
-
-sntpca <- rasterPCA(snt)   #PCA 
 
 #to import the image we use the brick() function 
 snt <- brick("snt_r10.tif")
@@ -826,6 +820,8 @@ plotRGB(snt,3,2,1, stretch="lin")
 plotRGB(snt,4,3,2, stretch="lin")
 #since vegetation is highly reflecting in NIR, we have the vegetation coloured in red
 
+sntpca <- rasterPCA(snt)   #PCA 
+
 #pairs() function produce a matrix of scatterplots
 pairs(snt)
 summary(sntpca$model) #Summary (or descriptive) statistics are the first figures used to represent nearly every dataset
@@ -841,7 +837,7 @@ window <- matrix(1, nrow = 5, ncol = 5)
 sd_snt <- focal(sntpca$map$PC1, w=window, fun=sd)
 cl <- colorRampPalette(c('dark blue','green','yellow','purple'))(100) # 
 plot(sd_snt, col=cl)
-#we can then show the two plots in 1 line 2 columns on the same graphic image through:
+#we can then show the two plots in 1 line and 2 columns on the same graphic image through:
 par(mfrow=c(1,2))
 
 plotRGB(snt,4,3,2, stretch="lin")
@@ -863,7 +859,7 @@ plotRGB(clad, 1,2,3, stretch="lin")
 window <- matrix(1, nrow = 3, ncol = 3)
 window
 #after having selected the size of the window, we do the calculation
-#again, we use focal function that calculate the values of several focal cells
+#again, we will use focal function that calculate the values of several focal cells
 #the clads are related (one line connect them) 
 pairs(clad)
 
@@ -899,7 +895,7 @@ plot(sd_clad_agg, col=cl)
 par(mfrow=c(1,2))
 cl <- colorRampPalette(c('yellow','violet','black'))(100) #
 plotRGB(clad, 1,2,3, stretch="lin")
-plot(sd_clad, col=cl)
+plot(sd_clad_agg, col=cl)
 # plot(sd_clad_agg, col=cl)
 
 
@@ -1078,10 +1074,9 @@ abline(0,1, col="red")  #we can draw the bisector with the command abline
 
 #15_R_crop_an_image.r#################################################################################
 ####################################################################################
-setwd("C:/lab/")
+setwd("C:/snow/")
 
-install.packages("ncdf4")
-
+library("ncdf4")
 library(raster)
 library(ncdf4)
 
