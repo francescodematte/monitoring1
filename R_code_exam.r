@@ -1006,7 +1006,7 @@ plot(difsnow, col=cldiff)
 # plot(predicted.snow.2025.norm, col=cl)
 # since the code needs time, you can download predicted.snow.2025.norm.tif from iol in the Data
 
-predicted.snow.2025.norm <- raster("predicted.snow.2025.norm.tif")
+predicted.snow.2025.norm <- raster("predictedsnow.2025.norm.tif")
 plot(predicted.snow.2025.norm, col=cl)
 
 
