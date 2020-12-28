@@ -917,7 +917,7 @@ library(ncdf4)  #we can now recall the library
 library(raster)
 
 #we import our file and name it snowmay
-snowmay <-raster("c_gls_SCE_202005280000_NHEMI_VIIRS_V1.0.1.nc")
+snowmay <-raster("c_gls_SCE500_202005280000_CEURO_MODIS_V1.0.1.nc")
 cl <- colorRampPalette(c('darkblue','blue','light blue'))(100) 
 
 
@@ -1080,7 +1080,7 @@ library("ncdf4")
 library(raster)
 library(ncdf4)
 
-snow <- raster("c_gls_SCE_202005280000_NHEMI_VIIRS_V1.0.1.nc")
+snow <- raster("c_gls_SCE500_202005280000_CEURO_MODIS_V1.0.1.nc")
 cl <- colorRampPalette(c('darkblue','blue','light blue'))(100)
 
 ext <- c(0, 20, 35, 50)  #coordinates
@@ -1103,8 +1103,8 @@ install.packages("spatstat")
 
 library(spatstat) #for interpolation
 
-#we are going to import the data. It is just a table (no raster, no brick are needed)
-# ; means the separator will be a semi-column, each column has an header so is TRUE
+#we are going to import the data. It is just a table (nor raster neither brick are needed)
+# ; means the separator will be a semi-column, each column has an header so head is TRUE
 inp <- read.table("dati_plot55_LAST3.csv", sep=";", head=T)
 
 #let's proceed estimating the rest of the canopy cover where there's no data
@@ -1148,7 +1148,7 @@ plot(Canopy.cov, cop.lich.mean, col="red", pch=19, cex=2)
 ######
 
 # Data psammophilus species (Giacomino)
-#psammophilus means that are adapted to arid environments (dell'ambiente dunale e retrodunale)
+#psammophilus means that these plants are adapted to arid environments (dell'ambiente dunale e retrodunale)
 #as before we have a file that is just a table (no need to use raster or brick)
 inp.psam <- read.table("dati_psammofile.csv", sep=";", head=T)
 
@@ -1164,7 +1164,7 @@ plot(E,N)
 
 #the range of different points x=east and y=north.
 #to know the range summary(inp.psam.) we use a bit of a larger area
-inp.psam.ppp <- ppp(x=E,y=N,c(356450,372240),c(5059800,5064150))
+inp.psam.ppp <- ppp(x=E, y=N, c(356450,372240),c(5059800,5064150))
 
 #the second step is to explain the variable we are going to use.
 
