@@ -34,6 +34,7 @@ import2<-lapply(rlist2,raster)
 
 B02<-resample(import2[[2]],import2[[5]])
 
+
 B03<-resample(import2[[3]],import2[[5]])
 
 B04<-resample(import2[[4]],import2[[5]])               #NOV 2017  ------->>>>resampling issue
