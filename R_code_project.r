@@ -163,32 +163,73 @@ box(col = "white")
 
 
 #NDVI
-ndvi1 <- (ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m - ott_2017$L2A_T33TUH_20171018T100031_B04_20m)
-/(ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m + ott2017_lens$L2A_T33TUH_20171018T100031_B04_20m)
+ndvi1 <- (ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m - ott2017_lens$L2A_T33TUH_20171018T100031_B04_20m)/(ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m + ott2017_lens$L2A_T33TUH_20171018T100031_B04_20m)
 
-ndvi2 <- (nov2017_lens$T33TUH_20171112T100229_B08 - nov2017_lens$T33TUH_20171112T100229_B04)
-/(nov2017_lens$T33TUH_20171112T100229_B08 + nov2017_lens$T33TUH_20171112T100229_B04)
+ndvi2 <- (nov2017_lens$T33TUH_20171112T100229_B08 - nov2017_lens$T33TUH_20171112T100229_B04)/(nov2017_lens$T33TUH_20171112T100229_B08 + nov2017_lens$T33TUH_20171112T100229_B04)
 
-ndvi3 <-(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m - dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)
-/(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m + dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)
+ndvi3 <-(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m - dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)/(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m + dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)
 
-ndvi4 <- (ott2020_lens$T33TUH_20201022T100051_B8A_20m - ott2020_lens$T33TUH_20201022T100051_B04_20m)
-/(ott2020_lens$T33TUH_20201022T100051_B8A_20m + ott2020_lens$T33TUH_20201022T100051_B04_20m)
+ndvi4 <- (ott2020_lens$T33TUH_20201022T100051_B8A_20m - ott2020_lens$T33TUH_20201022T100051_B04_20m)/(ott2020_lens$T33TUH_20201022T100051_B8A_20m + ott2020_lens$T33TUH_20201022T100051_B04_20m)
 
-ndvi5 <- (nov2020_lens$T33TUH_20201111T100241_B8A_20m - nov2020_lens$T33TUH_20201111T100241_B04_20m)
-/(nov2020_lens$T33TUH_20201111T100241_B8A_20m + nov2020_lens$T33TUH_20201111T100241_B04_20m)
+ndvi5 <- (nov2020_lens$T33TUH_20201111T100241_B8A_20m - nov2020_lens$T33TUH_20201111T100241_B04_20m)/(nov2020_lens$T33TUH_20201111T100241_B8A_20m + nov2020_lens$T33TUH_20201111T100241_B04_20m)
 
-ndvi6 <- (dic2020_lens$T33TUH_20201216T100329_B08 - dic2020_lens$T33TUH_20201216T100329_B04)
-/(dic2020_lens$T33TUH_20201216T100329_B08 + dic2020_lens$T33TUH_20201216T100329_B04)
+ndvi6 <- (dic2020_lens$T33TUH_20201216T100329_B08 - dic2020_lens$T33TUH_20201216T100329_B04)/(dic2020_lens$T33TUH_20201216T100329_B08 + dic2020_lens$T33TUH_20201216T100329_B04)
 
 
 
 
+#plot NDVI
+clNDVI = colorRampPalette(c("red", "yellow", "dark green"))(100)
+par(mfrow=c(2,3))
+plot(ndvi1, col = clNDVI, main = "October 18th, 2017")
+plot(ndvi2, col = clNDVI, main = "November 12th, 2017")
+plot(ndvi3, col = clNDVI, main = "December 22nd,2017")
+plot(ndvi4, col = clNDVI, main = "October 22nd, 2020")
+plot(ndvi5, col = clNDVI, main = "November 11th, 2020")
+plot(ndvi6, col = clNDVI, main = "December 16th, 2020")
+
+
+#RGB snow cover 1
+# adjust the parameters so the axes colors are white. Also turn off tick marks.
+par(col.axis = "white", col.lab = "white", tck = 0)
+par(mfrow=c(2,3))
+plotRGB(ott2017_lens,3,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+box(col = "white")
+plotRGB(nov2017_lens,3,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
+box(col = "white")
+plotRGB(dic2017_lens,3,8,9,scale= "20000", stretch = "lin", axes =TRUE, main = "December 22nd,2017")
+box(col = "white")
+plotRGB(ott2020_lens,3,8,9,scale= "20000", stretch = "lin", axes =TRUE, main = "October 22nd, 2020")
+box(col = "white")
+plotRGB(nov2020_lens,3,8,9,scale= "20000", stretch = "lin", axes =TRUE, main = "November 11th, 2020")
+box(col = "white")
+plotRGB(dic2020_lens,3,11,12,scale= "20000", stretch = "lin", axes =TRUE, main = "December 16th, 2020")
+box(col = "white")
+
+
+#NDSI
+ndsi1 <- (ott2017_lens$L2A_T33TUH_20171018T100031_B03_20m  - ott2017_lens$L2A_T33TUH_20171018T100031_B11_20m)/(ott2017_lens$L2A_T33TUH_20171018T100031_B03_20m  + ott2017_lens$L2A_T33TUH_20171018T100031_B11_20m)
+
+ndsi2 <- (nov2017_lens$T33TUH_20171112T100229_B03 - nov2017_lens$T33TUH_20171112T100229_B11)/(nov2017_lens$T33TUH_20171112T100229_B03 + nov2017_lens$T33TUH_20171112T100229_B11)           
+
+ndsi3 <- (dic2017_lens$L2A_T33TUH_20171222T100419_B03_20m  - dic2017_lens$L2A_T33TUH_20171222T100419_B11_20m)/(dic2017_lens$L2A_T33TUH_20171222T100419_B03_20m  + dic2017_lens$L2A_T33TUH_20171222T100419_B11_20m)           
+
+ndsi4 <- (ott2020_lens$T33TUH_20201022T100051_B03_20m  - ott2020_lens$T33TUH_20201022T100051_B11_20m)/(ott2020_lens$T33TUH_20201022T100051_B03_20m  + ott2020_lens$T33TUH_20201022T100051_B11_20m)
+
+ndsi5 <- (nov2020_lens$T33TUH_20201111T100241_B03_20m  - nov2020_lens$T33TUH_20201111T100241_B11_20m)/(nov2020_lens$T33TUH_20201111T100241_B03_20m  + nov2020_lens$T33TUH_20201111T100241_B11_20m)           
+
+ndsi6 <- (dic2020_lens$T33TUH_20201216T100329_B03 - dic2020_lens$T33TUH_20201216T100329_B11)/(dic2020_lens$T33TUH_20201216T100329_B03 + dic2020_lens$T33TUH_20201216T100329_B11)
 
 
 
-
-
+clNDSI = colorRampPalette(c("white", "yellow", "red"))(100)
+par(mfrow=c(2,3))
+plot(ndsi1, col = clNDSI, main = "")
+plot(ndsi2, col = clNDSI, main = "")
+plot(ndsi3, col = clNDSI, main = "")
+plot(ndsi4, col = clNDSI, main = "")
+plot(ndsi5, col = clNDSI, main = "")
+plot(ndsi6, col = clNDSI, main = "")
 
 
 
