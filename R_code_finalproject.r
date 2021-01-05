@@ -80,6 +80,33 @@ B10a<-resample(import6[[10]],import6[[5]])
 dic2020_bands<-stack(B01a,B02a,B03a,B04a,import6[[5]],import6[[6]],import6[[7]],B08a,B09a,B10a,import6[[11]],import6[[12]])
 
 
+######################## BANDS (images of Oct,and Dec 2017, Oct and Nov 2020) #########################
+
+############## BLUE:  B02 (490 nm)   2
+############## GREEN: B03 (560 nm)   3
+############## RED:   B04 (665 nm)   4
+############## VRE:   B05 (705 nm)   5
+############## VRE:   B06 (749 nm)   6      -> #These are the bands I'll work with. When working on these images and plotting them in RGB, the numbers I have use to link the different components to the RGB system are the ones more rightward 
+############## VRE:   B07 (783 nm)   7
+############## SWIR:  B11 (1610 nm)  8   
+############## SWIR:  B12 (2190 nm)  9
+############## NIR:   B8A (865 nm)   10
+
+
+#######################  BANDS  (images of Nov 2017 and December 2020) ###############################
+
+
+############## BLUE:  B02 (490 nm)   2
+############## GREEN: B03 (560 nm)   3
+############## RED:   B04 (665 nm)   4
+############## VRE:   B05 (705 nm)   5
+############## VRE:   B06 (749 nm)   6      -> # These two Sentinel images are composed by bands ordered in a different ways. I could get their order thanks to the command "summary", applied to the 2 images. 
+############## VRE:   B07 (783 nm)   7
+############## NIR:   B8A (865 nm)   8
+############## SWIR:  B11 (1610 nm)  11   
+############## SWIR:  B12 (2190 nm)  12
+
+
 #####  SELECTING MY SPECIFIC STUDY AREA  ####
 
 
@@ -97,12 +124,12 @@ vett_dic2020<-crop(dic2020_bands,zoom)
 
 
 par(mfrow=c(2,3))
-# adjust the parameters so the axes colors are white. Also turn off tick marks.
+
 par(col.axis = "white", col.lab = "white", tck = 0)
-# plot
+# I adjust the parameters so that the axes colors are white. Moreover I turn the tick marks off (=0)
 
 plotRGB(vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October  18th, 2017")
-# set bounding box to white as well
+# I set the bounding box to white as well
 box(col = "white")
 plotRGB(vett_nov2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
 box(col = "white")
@@ -116,23 +143,25 @@ plotRGB(vett_dic2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = 
 box(col = "white")
 
 
-#Here I examine the images of August only. I highlight the presence of vegetation by putting NIR(B08A) on top of the red component
+#Here I examine the images of October only. I highlight the presence of vegetation by putting NIR(B8A) on top of the red component
 
 par(mfrow=c(1,2))
-# adjust the parameters so the axes colors are white. Also turn off tick marks.
+
 par(col.axis = "white", col.lab = "white", tck = 0)
-# plot
 
 plotRGB(vett_ott2017,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-# set bounding box to white as well
 box(col = "white")
+
 plotRGB(vett_ott2020,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 22th, 2020")
 box(col = "white")
  
-#add a comment
+#Unfortunately the differences between the two images don't appear clearly. Only after a careful look it's possible to perceive that in August 2017 the open areas are wider.
 
 
-#NDVI
+#####  NDVI  ###########
+
+#I perform the calculation of the NDVI in order to better highlight the differences in vegetation cover in October 2017 (after an extremely hot summer) and October 2020
+
 NDVI_ott2017 <- (vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m - vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)/
 (vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m + vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)
 
@@ -142,22 +171,20 @@ NDVI_ott2020 <- (vett_ott2020$T33TUH_20201022T100051_B8A_20m - vett_ott2020$T33T
 
 difNDVI_ott<- NDVI_ott_2017-NDVI_ott_2020
 
-colNDVIdiff = colorRampPalette(c("red", "white", "blue"))(300)
+colNDVIdiff = colorRampPalette(c("red", "yellow", "dark green"))(250)
 
-plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between August 2017 and 2020")
+plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between October 2017 and 2020")
 
 
-#### SNOW COVER ####
+####  SNOW COVER  ####
 
 
 par(mfrow=c(2,2))
-# adjust the parameters so the axes colors are white. Also turn off tick marks.
 par(col.axis = "white", col.lab = "white", tck = 0)
-# plot
 
 plotRGB(vett_nov2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
 box(col = "white")
-plotRGB(vett_dic2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
+plotRGB(vett_dic2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22nd, 2017")
 box(col = "white")
 plotRGB(vett_nov2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
 box(col = "white")
@@ -166,10 +193,8 @@ box(col = "white")
 
 
 
-#NDSI calculation
+####  NDSI calculation  #######
 
-
-#NDSI
 
 
 NDSI_nov2017 <- (vett_nov2017$T33TUH_20171112T100229_B03 - vett_nov2017$T33TUH_20171112T100229_B11)/
@@ -186,7 +211,7 @@ NDSI_dic2020 <- (vett_dic2020$T33TUH_20201216T100329_B03 - vett_dic2020$T33TUH_2
 
 
 
-colNDSI = colorRampPalette(c("white", "yellow", "red"))(100)
+colNDSI = colorRampPalette(c("white", "yellow", "red"))(250)
 par(mfrow=c(2,2))
 plot(NDSI_nov2017, col = colNDSI, main = "NDSI nov 2017")
 plot(NDSI_dic2017, col = colNDSI, main = "NDSI dic 2017")
@@ -197,10 +222,12 @@ plot(NDSI_dic2020, col = colNDSI, main = "NDSI dic 2020")
 
 #RGB false colour for snow (red, SWIR1,SWIR2)
 
+#The plot of the NDSI related to Nov 2020 was characterised by quite uniform and low values of the index and didn't clearly revealed the presence of snow. 
+#I'm going to better highlight the presence of snow thanks to the contrast between its peculiar reflectance, low in the SWIR and high in the wavelenghts of the visible light (here I use red light)
+
 par(mfrow=c(2,2))
-# adjust the parameters so the axes colors are white. Also turn off tick marks.
+
 par(col.axis = "white", col.lab = "white", tck = 0)
-# plot
 
 plotRGB(vett_nov2017,4,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
 box(col = "white")
@@ -210,6 +237,8 @@ plotRGB(vett_nov2020,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = 
 box(col = "white")
 plotRGB(vett_dic2020,4,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "December 16th, 2020")
 box(col = "white")
+
+
 
 
 
