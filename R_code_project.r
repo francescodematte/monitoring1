@@ -13,14 +13,14 @@ plot(ott2017_bands)
 #####
 
 library(rgdal)
-install.packages("gdalUtils")                #in order to create a shape file
+install.packages("gdalUtils")                #in order to create a shape file-> DA ELIMINARE
 library(gdalUtils)
 
 vettore_shape<-readOGR("MonteVettoreShape.shp")
 proj4string(ott2017_bands)
 proj4string(vettore_shape)
 
-myshape1<-spTransform(vettore_shape,proj4string(ott2017_bands))
+myshape1<-spTransform(vettore_shape,proj4string(ott2017_bands))             ->DA ELIMINARE
 ott2017_lens<-mask(crop(ott2017_bands,extent(myshape1)),myshape1)
 
 ######################
@@ -131,55 +131,47 @@ zoom_vett_nov2017<-crop(nov2017_bands,ext)
 zoom_vett_dic2017<-crop(dic2017_bands,ext)
 zoom_vett_nov2020<-crop(nov2020_bands,ext)
 zoom_vett_dic2020<-crop(dic2020_bands,ext)
-par(mfrow=c(2,3))
-
-ext2<-c(330000,380000,4715000,4780000)
-zoom2_vett_ott2017<-crop(ott2017_bands,ext2)
-zoom2_vett_ott2020<-crop(ott2020_bands,ext2)
-
-par(mfrow=c(1,2))
-plotRGB(zoom2_vett_ott2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom2_vett_ott2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
 
 
-par(mfrow=c(1,2))
-plotRGB(zoom_vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_ott2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-
-plotRGB(zoom_vett_ott2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_nov2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_dic2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_ott2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_nov2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-
-
-
-par(mfrow=c(1,2))
-
-
-plotRGB(zoom_vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
-plotRGB(zoom_vett_ott2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
 
 
 par(mfrow=c(2,3))
 # adjust the parameters so the axes colors are white. Also turn off tick marks.
 par(col.axis = "white", col.lab = "white", tck = 0)
 # plot
-plotRGB(ott2017_lens,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+
+plotRGB(vett_ago2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 29th, 2017")
 # set bounding box to white as well
 box(col = "white")
+plotRGB(vett_nov2017,4,2,1,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
+box(col = "white")
+plotRGB(vett_dic2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
+box(col = "white")
+plotRGB(vett_ago2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 28th, 2020")
+box(col = "white")
+plotRGB(vett_nov2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
+box(col = "white")
+plotRGB(vett_dic2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 16th, 2020")
+box(col = "white")
 
-plotRGB(nov2017_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "November 12th, 2017")
+
+
+#Here I examine the images of August only. I highlight the presence of vegetation by putting NIR(B08A) on top of the red component
+
+par(mfrow=c(1,2))
+# adjust the parameters so the axes colors are white. Also turn off tick marks.
+par(col.axis = "white", col.lab = "white", tck = 0)
+# plot
+
+plotRGB(zoom_vett_ott2017,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 29th, 2017")
+# set bounding box to white as well
 box(col = "white")
-plotRGB(dic2017_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "December 22th, 2017")
+plotRGB(zoom_vett_ott2020,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 28th, 2020")
 box(col = "white")
-plotRGB(ott2020_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "October 22th, 2020")
-box(col = "white")
-plotRGB(nov2020_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "November 11th, 2020")
-box(col = "white")
-plotRGB(dic2020_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "December 16th, 2020")
-box(col = "white")
+
+
+
+
 
 
 #NIR on the top of the red component
@@ -222,13 +214,13 @@ box(col = "white")
 
 
 #NDVI
-ndvi1 <- (ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m - ott2017_lens$L2A_T33TUH_20171018T100031_B04_20m)/(ott2017_lens$L2A_T33TUH_20171018T100031_B8A_20m + ott2017_lens$L2A_T33TUH_20171018T100031_B04_20m)
+ndvi_ott_2017 <- (vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m - vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)/(vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m + vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)
 
 ndvi2 <- (nov2017_lens$T33TUH_20171112T100229_B08 - nov2017_lens$T33TUH_20171112T100229_B04)/(nov2017_lens$T33TUH_20171112T100229_B08 + nov2017_lens$T33TUH_20171112T100229_B04)
 
 ndvi3 <-(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m - dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)/(dic2017_lens$L2A_T33TUH_20171222T100419_B8A_20m + dic2017_lens$L2A_T33TUH_20171222T100419_B04_20m)
 
-ndvi4 <- (ott2020_lens$T33TUH_20201022T100051_B8A_20m - ott2020_lens$T33TUH_20201022T100051_B04_20m)/(ott2020_lens$T33TUH_20201022T100051_B8A_20m + ott2020_lens$T33TUH_20201022T100051_B04_20m)
+ndvi_ott_2020 <- (vett_ott2020$T33TUH_20201022T100051_B8A_20m - vett_ott2020$T33TUH_20201022T100051_B04_20m)/(vett_ott2020$T33TUH_20201022T100051_B8A_20m + vett_ott2020$T33TUH_20201022T100051_B04_20m)
 
 ndvi5 <- (nov2020_lens$T33TUH_20201111T100241_B8A_20m - nov2020_lens$T33TUH_20201111T100241_B04_20m)/(nov2020_lens$T33TUH_20201111T100241_B8A_20m + nov2020_lens$T33TUH_20201111T100241_B04_20m)
 
@@ -238,14 +230,14 @@ ndvi6 <- (dic2020_lens$T33TUH_20201216T100329_B08 - dic2020_lens$T33TUH_20201216
 
 
 #NDVI
-ndvi1a <- (zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m - zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)/(zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m + zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)
-ndvi4a <- (zoom_vett_ott2020$T33TUH_20201022T100051_B8A_20m - zoom_vett_ott2020$T33TUH_20201022T100051_B04_20m)/(zoom_vett_ott2020$T33TUH_20201022T100051_B8A_20m + zoom_vett_ott2020$T33TUH_20201022T100051_B04_20m)
+NDVIago2017 <- (vett_ago2017$L2A_T33TUH_20170829T100031_B8A_20m - vett_ott2017$L2A_T33TUH_20170829T100031_B04_20m)/(vett_ago2017$L2A_T33TUH_20170829T100031_B8A_20m + vett_ago2017$L2A_T33TUH_20170829T100031_B04_20m)
+NDVIago2020 <- (vett_ago2020$T33TUH_20200828T100029_B8A_20m - vett_ago2020$T33TUH_20200828T100029_B04_20m)/(vett_ago2020$T33TUH_20200828T100029_B8A_20m + vett_ago2020$T33TUH_20200828T100029_B04_20m)
 
-difNDVI_otta<- ndvi1a-ndvi4a
+difNDVI_ago<- NDVIago2017-NDVIago2020
 
-colNDVIdiff = colorRampPalette(c("red", "white", "blue"))(300)
+colNDVIdiff = colorRampPalette(c("red", "white", "blue"))(50)
 
-plot(difNDVI_otta, col=colNDVIdiff, main= "Differences in NDVI between 2017 and 2020")
+plot(difNDVI_ago, col=colNDVIdiff, main= "Differences in NDVI between August 2017 and 2020")
 
 
 
@@ -263,11 +255,11 @@ plot(ndvi_dic_2020, col = clNDVI, main = "December 16th, 2020")
 
 #differences in NDVI between October 2017 and october 2020
 
-difNDVI_ott<- ndvi_ott_2017-ndvi_ott_2020
+difNDVI_ott<- ndvi1-ndvi4
 
 colNDVIdiff = colorRampPalette(c("red", "yellow", "dark green"))(100)
 
-plot(dif_NDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between 2017 and 2020")
+plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between 2017 and 2020")
 
 
 #RGB snow cover 1
@@ -289,30 +281,58 @@ box(col = "white")
 
 
 #NDSI
-ndsi1 <- (ott2017_lens$L2A_T33TUH_20171018T100031_B03_20m  - ott2017_lens$L2A_T33TUH_20171018T100031_B11_20m)/(ott2017_lens$L2A_T33TUH_20171018T100031_B03_20m  + ott2017_lens$L2A_T33TUH_20171018T100031_B11_20m)
 
-ndsi2 <- (nov2017_lens$T33TUH_20171112T100229_B03 - nov2017_lens$T33TUH_20171112T100229_B11)/(nov2017_lens$T33TUH_20171112T100229_B03 + nov2017_lens$T33TUH_20171112T100229_B11)           
 
-ndsi3 <- (dic2017_lens$L2A_T33TUH_20171222T100419_B03_20m  - dic2017_lens$L2A_T33TUH_20171222T100419_B11_20m)/(dic2017_lens$L2A_T33TUH_20171222T100419_B03_20m  + dic2017_lens$L2A_T33TUH_20171222T100419_B11_20m)           
+NDSI_nov2017 <- (vett_nov2017$T33TUH_20171112T100229_B03 - vett_nov2017$T33TUH_20171112T100229_B11)/(vett_nov2017$T33TUH_20171112T100229_B03 + vett_nov2017$T33TUH_20171112T100229_B11)           
 
-ndsi4 <- (ott2020_lens$T33TUH_20201022T100051_B03_20m  - ott2020_lens$T33TUH_20201022T100051_B11_20m)/(ott2020_lens$T33TUH_20201022T100051_B03_20m  + ott2020_lens$T33TUH_20201022T100051_B11_20m)
+NDSI_dic2017 <- (vett_dic2017$L2A_T33TUH_20171222T100419_B03_20m  - vett_dic2017$L2A_T33TUH_20171222T100419_B11_20m)/(vett_dic2017$L2A_T33TUH_20171222T100419_B03_20m  + vett_dic2017$L2A_T33TUH_20171222T100419_B11_20m)           
 
-ndsi5 <- (nov2020_lens$T33TUH_20201111T100241_B03_20m  - nov2020_lens$T33TUH_20201111T100241_B11_20m)/(nov2020_lens$T33TUH_20201111T100241_B03_20m  + nov2020_lens$T33TUH_20201111T100241_B11_20m)           
+NDSI_nov2020 <- (vett_nov2020$T33TUH_20201111T100241_B03_20m  - vett_nov2020$T33TUH_20201111T100241_B11_20m)/(vett_nov2020$T33TUH_20201111T100241_B03_20m  + vett_nov2020$T33TUH_20201111T100241_B11_20m)           
 
-ndsi6 <- (dic2020_lens$T33TUH_20201216T100329_B03 - dic2020_lens$T33TUH_20201216T100329_B11)/(dic2020_lens$T33TUH_20201216T100329_B03 + dic2020_lens$T33TUH_20201216T100329_B11)
+NDSI_dic2020 <- (vett_dic2020$T33TUH_20201216T100329_B03 - vett_dic2020$T33TUH_20201216T100329_B11)/(vett_dic2020$T33TUH_20201216T100329_B03 + vett_dic2020$T33TUH_20201216T100329_B11)
 
 
 
-clNDSI = colorRampPalette(c("white", "yellow", "red"))(100)
-par(mfrow=c(2,3))
-plot(ndsi1, col = clNDSI, main = "")
-plot(ndsi2, col = clNDSI, main = "")
-plot(ndsi3, col = clNDSI, main = "")
-plot(ndsi4, col = clNDSI, main = "")
-plot(ndsi5, col = clNDSI, main = "")
-plot(ndsi6, col = clNDSI, main = "")
+colNDSI = colorRampPalette(c("white", "yellow", "red"))(100)
+par(mfrow=c(2,2))
+plot(NDSI_nov2017, col = colNDSI, main = "")
+plot(NDSI_dic2017, col = colNDSI, main = "")
+plot(NDSI_nov2020, col = colNDSI, main = "")
+plot(NDSI_dic2020, col = colNDSI, main = "")
 
 
+
+
+
+
+
+
+
+######################## BANDS (images of Oct,and Dec 2017, Oct and Nov 2020) #########################
+
+############## BLUE:  B02 (490 nm)   2
+############## GREEN: B03 (560 nm)   3
+############## RED:   B04 (665 nm)   4
+############## VRE:   B05 (705 nm)   5
+############## VRE:   B06 (749 nm)   6      -> #These are the bands I'll work with. When working on these images and plotting them in RGB, the numbers I have use to link the different components to the RGB system are the ones more rightward 
+############## VRE:   B07 (783 nm)   7
+############## SWIR:  B11 (1610 nm)  8   
+############## SWIR:  B12 (2190 nm)  9
+############## NIR:   B8A (865 nm)   10
+
+
+#######################  BANDS  (images of Nov 2017 and December 2020)
+
+
+############## BLUE:  B02 (490 nm)   2
+############## GREEN: B03 (560 nm)   3
+############## RED:   B04 (665 nm)   4
+############## VRE:   B05 (705 nm)   5
+############## VRE:   B06 (749 nm)   6      -> # These two Sentinel images are composed by bands ordered in a different ways. I could get their order thanks to the command "summary", applied to the 2 images. 
+############## VRE:   B07 (783 nm)   7
+############## NIR:   B8A (865 nm)   8
+############## SWIR:  B11 (1610 nm)  11   
+############## SWIR:  B12 (2190 nm)  12
 
 
 
