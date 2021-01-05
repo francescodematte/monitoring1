@@ -2,10 +2,10 @@ setwd("C:/Exam/data")
 
 library(raster)                #if not already installed:   install.packages("raster")   
 
-rlist1<-list.files(pattern="201708")     #OTT 2017
+rlist1<-list.files(pattern="201710")     #OTT 2017
 rlist1                                   #checking the different bands composing the image and their features
 import1<-lapply(rlist1,raster)
-ago2017_bands<-stack(import1)
+ott2017_bands<-stack(import1)
 
 #########
 
@@ -43,10 +43,10 @@ dic2017_bands<-stack(import3)
 
 ########
 
-rlist4<-list.files(pattern="202008")
+rlist4<-list.files(pattern="202010")
 rlist4                                   
 import4<-lapply(rlist4,raster)                     # OTT 2020
-ago2020_bands<-stack(import4)
+ott2020_bands<-stack(import4)
 
 ########
 
@@ -87,10 +87,10 @@ zoom<-c(342000,367000,4732000,4757000)            #here I drawn my area of inter
 
 
 
-vett_ago2017<-crop(ago2017_bands,zoom)
+vett_ott2017<-crop(ott2017_bands,zoom)
 vett_nov2017<-crop(nov2017_bands,zoom)
 vett_dic2017<-crop(dic2017_bands,zoom)
-vett_ago2020<-crop(ago2020_bands,zoom)
+vett_ott2020<-crop(ott2020_bands,zoom)
 vett_nov2020<-crop(nov2020_bands,zoom)
 vett_dic2020<-crop(dic2020_bands,zoom)
 
@@ -101,19 +101,120 @@ par(mfrow=c(2,3))
 par(col.axis = "white", col.lab = "white", tck = 0)
 # plot
 
-plotRGB(vett_ago2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 29th, 2017")
+plotRGB(vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October  18th, 2017")
 # set bounding box to white as well
 box(col = "white")
 plotRGB(vett_nov2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
 box(col = "white")
 plotRGB(vett_dic2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
 box(col = "white")
-plotRGB(vett_ago2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "August 28th, 2020")
+plotRGB(vett_ott2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 22th, 2020")
 box(col = "white")
 plotRGB(vett_nov2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
 box(col = "white")
 plotRGB(vett_dic2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 16th, 2020")
 box(col = "white")
+
+
+#Here I examine the images of August only. I highlight the presence of vegetation by putting NIR(B08A) on top of the red component
+
+par(mfrow=c(1,2))
+# adjust the parameters so the axes colors are white. Also turn off tick marks.
+par(col.axis = "white", col.lab = "white", tck = 0)
+# plot
+
+plotRGB(vett_ott2017,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+# set bounding box to white as well
+box(col = "white")
+plotRGB(vett_ott2020,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 22th, 2020")
+box(col = "white")
+ 
+#add a comment
+
+
+#NDVI
+NDVI_ott2017 <- (vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m - vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)/
+(vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m + vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)
+
+NDVI_ott2020 <- (vett_ott2020$T33TUH_20201022T100051_B8A_20m - vett_ott2020$T33TUH_20201022T100051_B04_20m)/
+(vett_ott2020$T33TUH_20201022T100051_B8A_20m + vett_ott2020$T33TUH_20201022T100051_B04_20m)
+
+
+difNDVI_ott<- NDVI_ott_2017-NDVI_ott_2020
+
+colNDVIdiff = colorRampPalette(c("red", "white", "blue"))(300)
+
+plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between August 2017 and 2020")
+
+
+#### SNOW COVER ####
+
+
+par(mfrow=c(2,2))
+# adjust the parameters so the axes colors are white. Also turn off tick marks.
+par(col.axis = "white", col.lab = "white", tck = 0)
+# plot
+
+plotRGB(vett_nov2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
+box(col = "white")
+plotRGB(vett_dic2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
+box(col = "white")
+plotRGB(vett_nov2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
+box(col = "white")
+plotRGB(vett_dic2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "December 16th, 2020")
+box(col = "white")
+
+
+
+#NDSI calculation
+
+
+#NDSI
+
+
+NDSI_nov2017 <- (vett_nov2017$T33TUH_20171112T100229_B03 - vett_nov2017$T33TUH_20171112T100229_B11)/
+(vett_nov2017$T33TUH_20171112T100229_B03 + vett_nov2017$T33TUH_20171112T100229_B11)           
+
+NDSI_dic2017 <- (vett_dic2017$L2A_T33TUH_20171222T100419_B03_20m  - vett_dic2017$L2A_T33TUH_20171222T100419_B11_20m)/
+(vett_dic2017$L2A_T33TUH_20171222T100419_B03_20m  + vett_dic2017$L2A_T33TUH_20171222T100419_B11_20m)           
+
+NDSI_nov2020 <- (vett_nov2020$T33TUH_20201111T100241_B03_20m  - vett_nov2020$T33TUH_20201111T100241_B11_20m)/
+(vett_nov2020$T33TUH_20201111T100241_B03_20m  + vett_nov2020$T33TUH_20201111T100241_B11_20m)           
+
+NDSI_dic2020 <- (vett_dic2020$T33TUH_20201216T100329_B03 - vett_dic2020$T33TUH_20201216T100329_B11)/
+(vett_dic2020$T33TUH_20201216T100329_B03 + vett_dic2020$T33TUH_20201216T100329_B11)
+
+
+
+colNDSI = colorRampPalette(c("white", "yellow", "red"))(100)
+par(mfrow=c(2,2))
+plot(NDSI_nov2017, col = colNDSI, main = "NDSI nov 2017")
+plot(NDSI_dic2017, col = colNDSI, main = "NDSI dic 2017")
+plot(NDSI_nov2020, col = colNDSI, main = "NDSI nov 2020")
+plot(NDSI_dic2020, col = colNDSI, main = "NDSI dic 2020")
+
+
+
+#RGB false colour for snow (red, SWIR1,SWIR2)
+
+par(mfrow=c(2,2))
+# adjust the parameters so the axes colors are white. Also turn off tick marks.
+par(col.axis = "white", col.lab = "white", tck = 0)
+# plot
+
+plotRGB(vett_nov2017,4,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
+box(col = "white")
+plotRGB(vett_dic2017,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
+box(col = "white")
+plotRGB(vett_nov2020,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
+box(col = "white")
+plotRGB(vett_dic2020,4,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "December 16th, 2020")
+box(col = "white")
+
+
+
+
+
 
 
 
