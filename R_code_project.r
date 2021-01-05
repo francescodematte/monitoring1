@@ -122,6 +122,46 @@ dic2020_lens<-mask(crop(dic2020_bands,extent(myshape6)),myshape6)
 #########plotting in RGB the six raster images
 
 
+
+ext<-c(342000,367000,4732000,4757000)
+
+zoom_vett_ott2017<-crop(ott2017_bands,ext)
+zoom_vett_ott2020<-crop(ott2020_bands,ext)
+zoom_vett_nov2017<-crop(nov2017_bands,ext)
+zoom_vett_dic2017<-crop(dic2017_bands,ext)
+zoom_vett_nov2020<-crop(nov2020_bands,ext)
+zoom_vett_dic2020<-crop(dic2020_bands,ext)
+par(mfrow=c(2,3))
+
+ext2<-c(330000,380000,4715000,4780000)
+zoom2_vett_ott2017<-crop(ott2017_bands,ext2)
+zoom2_vett_ott2020<-crop(ott2020_bands,ext2)
+
+par(mfrow=c(1,2))
+plotRGB(zoom2_vett_ott2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom2_vett_ott2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+
+
+par(mfrow=c(1,2))
+plotRGB(zoom_vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_ott2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+
+plotRGB(zoom_vett_ott2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_nov2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_dic2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_ott2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_nov2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+
+
+
+par(mfrow=c(1,2))
+
+
+plotRGB(zoom_vett_ott2017,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(zoom_vett_ott2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+
+
 par(mfrow=c(2,3))
 # adjust the parameters so the axes colors are white. Also turn off tick marks.
 par(col.axis = "white", col.lab = "white", tck = 0)
@@ -141,6 +181,25 @@ box(col = "white")
 plotRGB(dic2020_lens,4,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "December 16th, 2020")
 box(col = "white")
 
+
+#NIR on the top of the red component
+
+
+plotRGB(ott2017_lens,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+# set bounding box to white as well
+box(col = "white")
+
+
+plotRGB(nov2017_lens,8,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "November 12th, 2017")
+box(col = "white")
+plotRGB(dic2017_lens,10,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "December 22th, 2017")
+box(col = "white")
+plotRGB(ott2020_lens,10,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "October 22th, 2020")
+box(col = "white")
+plotRGB(nov2020_lens,10,3,2,scale= "20000", stretch = "lin", axes =TRUE, main = "November 11th, 2020")
+box(col = "white")
+plotRGB(dic2020_lens,8,2,1,scale= "20000", stretch = "lin", axes =TRUE, main = "December 16th, 2020")
+box(col = "white")
 
 
 # RGB false Colour
@@ -178,15 +237,37 @@ ndvi6 <- (dic2020_lens$T33TUH_20201216T100329_B08 - dic2020_lens$T33TUH_20201216
 
 
 
+#NDVI
+ndvi1a <- (zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m - zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)/(zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B8A_20m + zoom_vett_ott2017$L2A_T33TUH_20171018T100031_B04_20m)
+ndvi4a <- (zoom_vett_ott2020$T33TUH_20201022T100051_B8A_20m - zoom_vett_ott2020$T33TUH_20201022T100051_B04_20m)/(zoom_vett_ott2020$T33TUH_20201022T100051_B8A_20m + zoom_vett_ott2020$T33TUH_20201022T100051_B04_20m)
+
+difNDVI_otta<- ndvi1a-ndvi4a
+
+colNDVIdiff = colorRampPalette(c("red", "white", "blue"))(300)
+
+plot(difNDVI_otta, col=colNDVIdiff, main= "Differences in NDVI between 2017 and 2020")
+
+
+
+
 #plot NDVI
-clNDVI = colorRampPalette(c("red", "yellow", "dark green"))(100)
+colNDVI = colorRampPalette(c("red", "yellow", "dark green"))(100)
 par(mfrow=c(2,3))
-plot(ndvi1, col = clNDVI, main = "October 18th, 2017")
-plot(ndvi2, col = clNDVI, main = "November 12th, 2017")
-plot(ndvi3, col = clNDVI, main = "December 22nd,2017")
-plot(ndvi4, col = clNDVI, main = "October 22nd, 2020")
-plot(ndvi5, col = clNDVI, main = "November 11th, 2020")
-plot(ndvi6, col = clNDVI, main = "December 16th, 2020")
+plot(ndvi_ott_2017, col = clNDVI, main = "October 18th, 2017")
+plot(ndvi_nov_2017, col = clNDVI, main = "November 12th, 2017")
+plot(ndvi_dic_2017, col = clNDVI, main = "December 22nd,2017")
+plot(ndvi_ott_2020, col = clNDVI, main = "October 22nd, 2020")
+plot(ndvi_nov_2020, col = clNDVI, main = "November 11th, 2020")
+plot(ndvi_dic_2020, col = clNDVI, main = "December 16th, 2020")
+
+
+#differences in NDVI between October 2017 and october 2020
+
+difNDVI_ott<- ndvi_ott_2017-ndvi_ott_2020
+
+colNDVIdiff = colorRampPalette(c("red", "yellow", "dark green"))(100)
+
+plot(dif_NDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between 2017 and 2020")
 
 
 #RGB snow cover 1
