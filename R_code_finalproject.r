@@ -156,10 +156,10 @@ par(mfrow=c(1,2))
 
 par(col.axis = "white", col.lab = "white", tck = 0)
 
-plotRGB(vett_ott2017,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")
+plotRGB(vett_ott2017,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 18th, 2017")     # Reminder: in these images, the number associated to the NIR band (I'll refere to NIR band 8A) is 10
 box(col = "white")
 
-plotRGB(vett_ott2020,8,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 22th, 2020")
+plotRGB(vett_ott2020,10,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = "October 22th, 2020")
 box(col = "white")
  
 #Unfortunately the differences between the two images don't appear clearly. Only after a careful look it's possible to perceive that in August 2017 the open areas are wider.
@@ -176,7 +176,7 @@ NDVI_ott2020 <- (vett_ott2020$T33TUH_20201022T100051_B8A_20m - vett_ott2020$T33T
 (vett_ott2020$T33TUH_20201022T100051_B8A_20m + vett_ott2020$T33TUH_20201022T100051_B04_20m)
 
 
-difNDVI_ott<- NDVI_ott_2017-NDVI_ott_2020
+difNDVI_ott<- NDVI_ott2017-NDVI_ott2020
 
 colNDVIdiff = colorRampPalette(c("red", "yellow", "dark green"))(250)
 
@@ -231,8 +231,8 @@ plot(NDSI_dic2020, col = colNDSI, main = "NDSI dic 2020")
 
 #RGB false colour for snow (red, SWIR1,SWIR2)
 
-#The plot of the NDSI related to NovEMBER 2020 was characterised by quite uniform and low values of the index and didn't clearly revealed the presence of snow (very likely due to atmospheric disturbance altering the reflectance of our landscape) 
-#I'm going to better highlight the presence of snow thanks to the contrast between its peculiar reflectance, low in the SWIR and high in the wavelenghts of the visible light (here I use red light)
+#The plot of the NDSI related to NovEMBER 2020 was characterised by quite uniform and low values of the index and didn't clearly revealed the presence of snow (could be due to atmospheric disturbance altering the reflectance of our landscape) 
+#I'm going to better highlight the presence of snow, if there was any, thanks to the contrast between its peculiar reflectance, low in the SWIR and high in the wavelenghts of the visible light (here I use red light)
 
 par(mfrow=c(2,2))
 
@@ -240,7 +240,7 @@ par(col.axis = "white", col.lab = "white", tck = 0)
 
 plotRGB(vett_nov2017,4,11,12,scale= "20000", stretch = "lin", axes = TRUE, main = "November 12th, 2017")
 box(col = "white")
-plotRGB(vett_dic2017,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")
+plotRGB(vett_dic2017,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "December 22th, 2017")       # Reminder: in the dic2017 and nov2020 the SWIR bands are associated to the numbers 8 and 9
 box(col = "white")
 plotRGB(vett_nov2020,4,8,9,scale= "20000", stretch = "lin", axes = TRUE, main = "November 11th, 2020")
 box(col = "white")
