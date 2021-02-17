@@ -1,23 +1,26 @@
 setwd("C:/Exam/data")
 
-library(raster)                #if not already installed:   install.packages("raster")   
+library(raster)                #if not already installed:   install.packages("raster")   The command "library" recalls the functions of a preinstalled package (it is like to grab a book you already have in your library)
 
-rlist1<-list.files(pattern="201710")     #OTT 2017
+rlist1<-list.files(pattern="201710")     #OCT 2017 image
 rlist1                                   #checking the different bands composing the image and their features
+
 import1<-lapply(rlist1,raster)
 ott2017_bands<-stack(import1)
 
 #########
 
 rlist2<-list.files(pattern="201711")
-rlist2                                   
+
 import2<-lapply(rlist2,raster)
 
-#NOV 2017  ------->>>>resampling issue:this Sentinel-2 image is composed by bands with different resolutions.
-I cannot create a stack with elements of different size so I use the function "resample" to set all images in the same format (I choose to work on 20 m res images)
+# NOV 2017  ------->>>>resampling issue:this Sentinel-2 image is composed by bands with different resolutions, thereby being composed by a different number of rows and columns.
+# I cannot create a stack with elements of different size so I use the function "resample" to set all images in the same format (I choose to work on 20 m res images)
+
+#####
 
 
-B01<-resample(import2[[1]],import2[[5]])
+B01<-resample(import2[[1]],import2[[5]])             # The second element in the parenthesis define the level of resolution I refere in order the resample all the other bands having a different resolution
 
 B02<-resample(import2[[2]],import2[[5]])
 
@@ -37,30 +40,31 @@ nov2017_bands<-stack(B01,B02,B03,B04,import2[[5]],import2[[6]],import2[[7]],B08,
 ########
 
 rlist3<-list.files(pattern="201712")
-rlist3                                   
-import3<-lapply(rlist3,raster)                     #DIC 2017
+import3<-lapply(rlist3,raster)                     #DEC 2017
+
 dic2017_bands<-stack(import3)
 
 ########
 
 rlist4<-list.files(pattern="202010")
-rlist4                                   
-import4<-lapply(rlist4,raster)                     # OTT 2020
+
+import4<-lapply(rlist4,raster)                     # OCT 2020
 ott2020_bands<-stack(import4)
 
 ########
 
 rlist5<-list.files(pattern="202011")
-rlist5                                   
+                                   
 import5<-lapply(rlist5,raster)                     # NOV 2020
 nov2020_bands<-stack(import5)
 
 ########
 
-#DIC 2020  ------->>>> Resampling issue again. The image of dic 2020 is in the same format of the image of nov 2017, thereby I need to use resample function again
+#DIC 2020  ------->>>> Resampling issue again. The image of dic 2020 is in the same format of the image of nov 2017. I need to use "resample" function again
 
 rlist6<-list.files(pattern="202012")
-rlist6                                   
+rlist6
+
 import6<-lapply(rlist6,raster)
 
 B01a<-resample(import6[[1]],import6[[5]])
@@ -80,20 +84,20 @@ B10a<-resample(import6[[10]],import6[[5]])
 dic2020_bands<-stack(B01a,B02a,B03a,B04a,import6[[5]],import6[[6]],import6[[7]],B08a,B09a,B10a,import6[[11]],import6[[12]])
 
 
-######################## BANDS (images of Oct,and Dec 2017, Oct and Nov 2020) #########################
+######################## BANDS (images of October and December 2017, October and November 2020) #########################
 
 ############## BLUE:  B02 (490 nm)   2
 ############## GREEN: B03 (560 nm)   3
 ############## RED:   B04 (665 nm)   4
 ############## VRE:   B05 (705 nm)   5
-############## VRE:   B06 (749 nm)   6      -> #These are the bands I'll work with. When working on these images and plotting them in RGB, the numbers I have use to link the different components to the RGB system are the ones more rightward 
+############## VRE:   B06 (749 nm)   6      -> #These are the bands I'll work with. When working with these images and plotting them in RGB, the numbers I have use to link to the three components of the RGB system are the most rightward ones 
 ############## VRE:   B07 (783 nm)   7
 ############## SWIR:  B11 (1610 nm)  8   
 ############## SWIR:  B12 (2190 nm)  9
 ############## NIR:   B8A (865 nm)   10
 
 
-#######################  BANDS  (images of Nov 2017 and December 2020) ###############################
+#######################  BANDS  (images of November 2017 and December 2020) ###############################
 
 
 ############## BLUE:  B02 (490 nm)   2
@@ -110,18 +114,19 @@ dic2020_bands<-stack(B01a,B02a,B03a,B04a,import6[[5]],import6[[6]],import6[[7]],
 #####  SELECTING MY SPECIFIC STUDY AREA  ####
 
 
-zoom<-c(342000,367000,4732000,4757000)            #here I drawn my area of interest by adding an interval of coordinates in the coordinates system of the images I have
+zoom<-c(342000,367000,4732000,4757000)            # Here I drawn my area of interest by adding an interval of coordinates in the coordinates system of the images I have.
+                                                  # The first and second elements refere to the x and y axis extents respectively. 
 
 
 
-vett_ott2017<-crop(ott2017_bands,zoom)
+vett_ott2017<-crop(ott2017_bands,zoom)            # Through the symbol "<-" I assign a name to the zooms of my specific area I realized for each of the original images
 vett_nov2017<-crop(nov2017_bands,zoom)
 vett_dic2017<-crop(dic2017_bands,zoom)
 vett_ott2020<-crop(ott2020_bands,zoom)
 vett_nov2020<-crop(nov2020_bands,zoom)
 vett_dic2020<-crop(dic2020_bands,zoom)
 
-
+###   TRUE COLOUR PLOT   ###
 
 par(mfrow=c(2,3))
 
@@ -143,7 +148,9 @@ plotRGB(vett_dic2020,4,3,2,scale= "20000", stretch = "lin", axes = TRUE, main = 
 box(col = "white")
 
 
-#Here I examine the images of October only. I highlight the presence of vegetation by putting NIR(B8A) on top of the red component
+###   VEGETATION IN OCTOBER, QUALITATIVE ANALYSIS   ###
+
+#Here I compare the images of October only. I highlight the presence of vegetation by putting NIR(B8A) on top of the red component of the RGB system
 
 par(mfrow=c(1,2))
 
@@ -173,10 +180,12 @@ difNDVI_ott<- NDVI_ott_2017-NDVI_ott_2020
 
 colNDVIdiff = colorRampPalette(c("red", "yellow", "dark green"))(250)
 
-plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between October 2017 and 2020")
+plot(difNDVI_ott, col=colNDVIdiff, main= "Differences in NDVI between October 2017 and October 2020")
 
 
 ####  SNOW COVER  ####
+
+#True colour plot
 
 
 par(mfrow=c(2,2))
@@ -222,7 +231,7 @@ plot(NDSI_dic2020, col = colNDSI, main = "NDSI dic 2020")
 
 #RGB false colour for snow (red, SWIR1,SWIR2)
 
-#The plot of the NDSI related to Nov 2020 was characterised by quite uniform and low values of the index and didn't clearly revealed the presence of snow. 
+#The plot of the NDSI related to NovEMBER 2020 was characterised by quite uniform and low values of the index and didn't clearly revealed the presence of snow (very likely due to atmospheric disturbance altering the reflectance of our landscape) 
 #I'm going to better highlight the presence of snow thanks to the contrast between its peculiar reflectance, low in the SWIR and high in the wavelenghts of the visible light (here I use red light)
 
 par(mfrow=c(2,2))
