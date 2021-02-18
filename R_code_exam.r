@@ -479,7 +479,7 @@ install.packages("rasterVis")
 
 library(rasterVis)
 library(rasterdiv)
-#the input dataset is the Copernicus Long-term (1999-2017) average Normalise Difference Vegetation Index (copNDVI)
+#the input dataset is the Copernicus Long-term (1999-2017) average Normalized Differenced Vegetation Index (copNDVI)
 data(copNDVI)
 plot(copNDVI)
 
