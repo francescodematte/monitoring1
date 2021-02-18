@@ -15,7 +15,7 @@ rlist2<-list.files(pattern="201711")
 
 import2<-lapply(rlist2,raster)
 
-# NOV 2017  ------->>>> resampling issue:this Sentinel-2 image is composed by bands with different resolutions, thereby being composed by a different number of rows and columns
+# NOV 2017  ----->>>> resampling issue:this Sentinel-2 image is composed by bands with different resolutions, thereby being composed by a different number of rows and columns
 # (different number of pixels, with different grain size)
 # I cannot create a stack with elements of different size so I use the function "resample" to set all images in the same format (I chose to work on 20 m res images)
 
@@ -24,14 +24,13 @@ import2<-lapply(rlist2,raster)
 
 B01<-resample(import2[[1]],import2[[5]])             # The second element in the parenthesis define the level of resolution I refere in order to resample all the other bands
                                                      # having a different resolution
-
 B02<-resample(import2[[2]],import2[[5]])
 
 B03<-resample(import2[[3]],import2[[5]])
 
-B04<-resample(import2[[4]],import2[[5]])    
+B04<-resample(import2[[4]],import2[[5]])
 
-B08<-resample(import2[[8]],import2[[5]])          
+B08<-resample(import2[[8]],import2[[5]])
 
 B09<-resample(import2[[9]],import2[[5]])
 
